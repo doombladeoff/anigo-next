@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import { LastUpdates } from "./components/LastUpdatesAnime";
 import SeasonsAnime from "./components/SeasonsAnime";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
         "
       >
         <SeasonsAnime />
+        <LastUpdates />
       </main>
     </div>
   );
