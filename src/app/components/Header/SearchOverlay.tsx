@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { SearchItem } from "./Search/SearchItem";
 import { ANIME_QUERY, client } from "@/lib/apollo";
 import { StatusFilter } from "./Search/StatusFilter";
+import { KindFilter } from "./Search/KindFilter";
 
 const limit = 20;
 const STATUS_FILTERS = [
@@ -11,48 +12,53 @@ const STATUS_FILTERS = [
     { key: "ongoing", label: "Онгоинг" },
     { key: "released", label: "Завершён" },
 ];
+export const KIND_FILTERS = [
+    { key: "tv", label: "TV" },
+    { key: "movie", label: "Фильм" },
+    { key: "ova", label: "OVA" },
+    { key: "ona", label: "ONA" },
+    { key: "tv_special", label: "Спешл" },
+];
 
 export const SearchOverlay = () => {
     const [queryText, setQueryText] = useState('');
     const [status, setStatus] = useState<string[]>([]);
+    const [kind, setKind] = useState<string[]>([]);
     const [data, setData] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
     const scrollRef = useRef<HTMLDivElement | null>(null);
-
-    const fetchPage = async (pageNumber: number, reset = false, querySnapshot?: string) => {
-        const currentQuery = querySnapshot ?? queryText;
-
+    const resetScrollTop = () => {
+        if (scrollRef.current) scrollRef.current.scrollTop = 0;
+    };
+    
+    const fetchPage = async (pageNumber: number, reset = false) => {
         if (loading) return;
         setLoading(true);
 
         const formatStatus = status.length > 0 ? status.join(',') : undefined;
-
-        if (currentQuery === queryText && status.length > 0 && data.length > 0) {
-            const filteredData = data.filter((v) => status.includes(v.status));
-            setData(filteredData);
-            setLoading(false);
-            return;
-        }
+        const formatKind = kind.length > 0 ? kind.join(',') : undefined;
 
         try {
-            console.log(`[API]: Fetch ${querySnapshot}`)
-            const { data }: { data: { animes: any[] } | any } = await client.query({
+            const { data }: { data: any } = await client.query({
                 query: ANIME_QUERY,
                 variables: {
-                    search: queryText,
+                    search: queryText || undefined,
                     limit,
                     page: pageNumber,
                     ...(formatStatus && { status: formatStatus }),
+                    ...(formatKind && { kind: formatKind }),
                 },
+                fetchPolicy: "network-only",
             });
 
             const list = data.animes as any[];
 
             setData(prev => reset ? list : [...prev, ...list]);
             setHasMore(list.length === limit);
+
         } catch (error) {
             console.error('[API ERROR]:', error);
         }
@@ -61,16 +67,22 @@ export const SearchOverlay = () => {
     };
 
     useEffect(() => {
-        if (!queryText) {
+        resetScrollTop();
+
+        if (!queryText && status.length === 0 && kind.length === 0) {
             setData([]);
             return;
         }
 
-        const handler = setTimeout(() => {
-            fetchPage(1, true, queryText)
-        }, 500);
+        let timeout = 500;
+        if (status.length > 0 || kind.length > 0) {
+            timeout = 20;
+        }
+
+        const handler = setTimeout(() => fetchPage(1, true), timeout);
+
         return () => clearTimeout(handler);
-    }, [queryText, status]);
+    }, [queryText, status, kind]);
 
     useEffect(() => {
         const element = scrollRef.current;
@@ -90,6 +102,11 @@ export const SearchOverlay = () => {
 
     const toggleStatus = (value: string) => {
         setStatus(prev => prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]);
+        setPage(1);
+    };
+
+    const toggleKind = (value: string) => {
+        setKind(prev => prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]);
         setPage(1);
     };
 
@@ -138,7 +155,10 @@ export const SearchOverlay = () => {
                     className="animate-slideDown w-[280px] rounded-3xl p-6 bg-white/10 border border-white/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]"
                 >
                     <h4 className="text-xl font-semibold text-white mb-4 w-full text-center">Фильтры</h4>
-                    <StatusFilter statusArr={STATUS_FILTERS} activeArr={status} toggleStatus={toggleStatus} />
+                    <div className="flex flex-col gap-5">
+                        <StatusFilter statusArr={STATUS_FILTERS} activeArr={status} toggleStatus={toggleStatus} />
+                        <KindFilter kindArr={KIND_FILTERS} activeKindArr={kind} toggleKind={toggleKind} />
+                    </div>
                 </div>
             </div>
         </div>

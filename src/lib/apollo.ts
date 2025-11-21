@@ -9,13 +9,26 @@ export const client = new ApolloClient({
 });
 
 export const ANIME_QUERY = gql`
-  query ($ids: String, $limit: Int, $season: SeasonString, $search: String, $page: Int, $status: AnimeStatusString) {
-    animes(ids: $ids, limit: $limit, season: $season, search: $search, page: $page, status: $status) {
+  query (
+   $ids: String,
+   $limit: Int, 
+   $season: SeasonString, 
+   $search: String, 
+   $page: Int, 
+   $status: AnimeStatusString,
+   $kind: AnimeKindString) {
+    animes(
+    ids: $ids, 
+    limit: $limit, 
+    season: $season, 
+    search: $search, 
+    page: $page, 
+    status: $status,
+    kind: $kind) {
       id
       malId
       name
       russian
-      licenseNameRu
       english
       japanese
       synonyms
@@ -29,42 +42,20 @@ export const ANIME_QUERY = gql`
       nextEpisodeAt
       airedOn { year month day date }
       releasedOn { year month day date }
-      url
-      season
 
-      poster { id originalUrl mainUrl }
+      poster { 
+        id 
+        originalUrl 
+        mainUrl
+        preview2xUrl
+      }
 
-      fansubbers
-      fandubbers
-      licensors
       createdAt
       updatedAt
       nextEpisodeAt
       isCensored
 
       genres { id name russian kind }
-      studios { id name imageUrl }
-
-      externalLinks {
-        id
-        kind
-        url
-        createdAt
-        updatedAt
-      }
-
-      personRoles {
-        id
-        rolesRu
-        rolesEn
-        person { id name poster { id } }
-      }
-      characterRoles {
-        id
-        rolesRu
-        rolesEn
-        character { id name poster { id } }
-      }
 
       related {
         id
@@ -74,15 +65,10 @@ export const ANIME_QUERY = gql`
         relationText
       }
 
-      videos { id url name kind playerUrl imageUrl }
       screenshots { id originalUrl x166Url x332Url }
-
-      scoresStats { score count }
-      statusesStats { status count }
 
       description
       descriptionHtml
-      descriptionSource
     }
   }
 `;
