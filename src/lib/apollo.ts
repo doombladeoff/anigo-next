@@ -9,8 +9,8 @@ export const client = new ApolloClient({
 });
 
 export const ANIME_QUERY = gql`
-  query ($ids: String, $limit: Int, $season: SeasonString, $search: String, $page: Int) {
-    animes(ids: $ids, limit: $limit, season: $season, search: $search, page: $page) {
+  query ($ids: String, $limit: Int, $season: SeasonString, $search: String, $page: Int, $status: AnimeStatusString) {
+    animes(ids: $ids, limit: $limit, season: $season, search: $search, page: $page, status: $status) {
       id
       malId
       name

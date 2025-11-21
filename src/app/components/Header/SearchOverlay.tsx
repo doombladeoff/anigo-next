@@ -1,14 +1,20 @@
 import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { SearchItem } from "./SearchItem";
+import { SearchItem } from "./Search/SearchItem";
 import { ANIME_QUERY, client } from "@/lib/apollo";
+import { StatusFilter } from "./Search/StatusFilter";
 
 const limit = 20;
+const STATUS_FILTERS = [
+    { key: "anons", label: "Анонс" },
+    { key: "ongoing", label: "Онгоинг" },
+    { key: "released", label: "Завершён" },
+];
 
-export const SearchOverlay = (props: any) => {
+export const SearchOverlay = () => {
     const [queryText, setQueryText] = useState('');
-
+    const [status, setStatus] = useState<string[]>([]);
     const [data, setData] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
@@ -16,24 +22,41 @@ export const SearchOverlay = (props: any) => {
 
     const scrollRef = useRef<HTMLDivElement | null>(null);
 
-    const fetchPage = async (pageNumber: number, reset = false) => {
+    const fetchPage = async (pageNumber: number, reset = false, querySnapshot?: string) => {
+        const currentQuery = querySnapshot ?? queryText;
+
         if (loading) return;
         setLoading(true);
 
-        const { data }: { data: { animes: any[] } | any } = await client.query({
-            query: ANIME_QUERY,
-            variables: { search: queryText, limit, page: pageNumber },
-        });
+        const formatStatus = status.length > 0 ? status.join(',') : undefined;
 
-        const list = data.animes as any[];
-
-        if (reset) {
-            setData(list);
-        } else {
-            setData((prev: any[]) => [...prev, ...list]);
+        if (currentQuery === queryText && status.length > 0 && data.length > 0) {
+            const filteredData = data.filter((v) => status.includes(v.status));
+            setData(filteredData);
+            setLoading(false);
+            return;
         }
 
-        setHasMore(list.length === limit);
+        try {
+            console.log(`[API]: Fetch ${querySnapshot}`)
+            const { data }: { data: { animes: any[] } | any } = await client.query({
+                query: ANIME_QUERY,
+                variables: {
+                    search: queryText,
+                    limit,
+                    page: pageNumber,
+                    ...(formatStatus && { status: formatStatus }),
+                },
+            });
+
+            const list = data.animes as any[];
+
+            setData(prev => reset ? list : [...prev, ...list]);
+            setHasMore(list.length === limit);
+        } catch (error) {
+            console.error('[API ERROR]:', error);
+        }
+
         setLoading(false);
     };
 
@@ -44,23 +67,17 @@ export const SearchOverlay = (props: any) => {
         }
 
         const handler = setTimeout(() => {
-            console.log("Поиск:", queryText);
-            fetchPage(1, true);
-        }, 800);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [queryText]);
+            fetchPage(1, true, queryText)
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [queryText, status]);
 
     useEffect(() => {
         const element = scrollRef.current;
         if (!element) return;
 
         const onScroll = () => {
-            const bottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 150;
-
-            if (bottom && hasMore && !loading) {
+            if (element.scrollTop + element.clientHeight >= element.scrollHeight - 150 && hasMore && !loading) {
                 const nextPage = page + 1;
                 setPage(nextPage);
                 fetchPage(nextPage);
@@ -71,15 +88,19 @@ export const SearchOverlay = (props: any) => {
         return () => element.removeEventListener("scroll", onScroll);
     }, [page, hasMore, loading]);
 
+    const toggleStatus = (value: string) => {
+        setStatus(prev => prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]);
+        setPage(1);
+    };
+
     return (
-        <div className="w-full h-screen flex items-center justify-center px-6">
-            <div className="flex gap-6 w-full max-w-5xl" {...props}>
-                {/* LEFT */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+            <div className="flex gap-6 w-full max-w-5xl">
+                {/* LEFT: SEARCH RESULTS */}
                 <div
                     onClick={(e) => e.stopPropagation()}
                     className="flex-1 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-3xl p-6 shadow-[0_0_50px_rgba(255,255,255,0.15)] animate-slideDown"
                 >
-                    {/* Input */}
                     <div className="relative">
                         <input
                             value={queryText}
@@ -91,49 +112,35 @@ export const SearchOverlay = (props: any) => {
                         <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={20} />
                     </div>
 
-                    {/* RESULTS */}
                     <div
                         ref={scrollRef}
                         className="overflow-y-auto h-[520px] mt-6 pr-2 no-scrollbar space-y-4"
                     >
-                        {data.map((el: any, index: number) => (
-                            <Link
-                                href={`/anime/${el.id}`}
-                                key={`${el.id}-${index}`}
-                                className="block"
-                            >
-                                <SearchItem el={el} index={index} />
-                            </Link>
-                        ))}
+                        {data.length > 0 ? (
+                            data.map((el, index) => (
+                                <Link href={`/anime/${el.id}`} key={`${el.id}-${index}`} className="block">
+                                    <SearchItem el={el} index={index} />
+                                </Link>
+                            ))
+                        ) : queryText && !loading ? (
+                            <p className="text-center text-white/70 py-10 text-lg">Ничего не найдено</p>
+                        ) : null}
 
                         {loading && (
-                            <div className="text-center text-white/70 py-6 animate-pulse">
-                                Загрузка...
-                            </div>
-                        )}
-
-                        {!loading && data.length === 0 && queryText && (
-                            <p className="text-center text-white/70 py-10 text-lg">
-                                Ничего не найдено
-                            </p>
+                            <div className="text-center text-white/70 py-6 animate-pulse">Загрузка...</div>
                         )}
                     </div>
                 </div>
 
-                {/* RIGHT — FILTERS */}
+                {/* RIGHT: FILTERS */}
                 <div
                     onClick={(e) => e.stopPropagation()}
-                    className="animate-slideDown w-[280px] rounded-3xl p-6 bg-white/10 border border-white/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]">
-                    <h3 className="text-xl font-semibold text-white mb-4">
-                        Фильтры
-                    </h3>
-
-                    <div className="space-y-6 text-white/90">
-                    // TODO - фильтры
-                    </div>
+                    className="animate-slideDown w-[280px] rounded-3xl p-6 bg-white/10 border border-white/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+                >
+                    <h4 className="text-xl font-semibold text-white mb-4 w-full text-center">Фильтры</h4>
+                    <StatusFilter statusArr={STATUS_FILTERS} activeArr={status} toggleStatus={toggleStatus} />
                 </div>
             </div>
-
         </div>
     );
 };
