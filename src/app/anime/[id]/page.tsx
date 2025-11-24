@@ -1,4 +1,5 @@
 import NextEpisode from "@/app/components/AnimePage/NextEpisodeDate";
+import Screenshots from "@/app/components/AnimePage/Screenshots";
 import { ANIME_QUERY, client } from "@/lib/apollo";
 import { cleanDescription } from "@/utils/cleanDescription";
 import { StarIcon } from "lucide-react";
@@ -111,6 +112,10 @@ export default async function AnimePage({ params }: any) {
                         </div>
                     </div>
                 )}
+
+                {anime?.screenshots?.length > 0 && (
+                    <Screenshots screenshots={anime.screenshots.slice(0, 12)} />
+                )}
             </div>
         </div>
     );
@@ -124,14 +129,3 @@ function Info({ label, value }: any) {
         </div>
     );
 }
-
-
-
-
-// {anime?.screenshots?.length > 0 && (
-//     <Screenshots screenshots={anime.screenshots.slice(0, 12)} />
-// )}
-
-// <div className="mt-5 px-5">
-//     <Player id={id} />
-// </div>
