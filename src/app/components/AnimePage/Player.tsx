@@ -13,7 +13,7 @@ export const Player = async ({ id }: { id: string | number }) => {
                     src={videolink}
                     width="100%"
                     height="480"
-                    className="rounded-xl shadow-lg max-w-4xl"
+                    className="shadow-lg max-w-4xl"
                     allowFullScreen
                     allow="autoplay *; fullscreen *"
                 />

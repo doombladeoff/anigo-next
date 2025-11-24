@@ -2,6 +2,7 @@ import NextEpisode from "@/app/components/AnimePage/NextEpisodeDate";
 import { Player } from "@/app/components/AnimePage/Player";
 import Screenshots from "@/app/components/AnimePage/Screenshots";
 import { SimilarAnime } from "@/app/components/AnimePage/Similar";
+import { KIND_FILTERS, RATING_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
 import { ANIME_QUERY, client } from "@/lib/apollo";
 import { cleanDescription } from "@/utils/cleanDescription";
 import { StarIcon } from "lucide-react";
@@ -83,11 +84,12 @@ export default async function AnimePage({ params }: any) {
                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl shadow-xl w-full">
                             <h2 className="text-xl sm:text-2xl font-semibold mb-4">Информация</h2>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <Info label="Тип" value={anime.kind} />
-                                <Info label="Статус" value={anime.status} />
+                            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                                <Info label="Тип" value={KIND_FILTERS.find(k => k.key === anime.kind)?.label || "—"} />
+                                <Info label="Статус" value={STATUS_FILTERS.find(k => k.key === anime.status)?.label || "—"} />
                                 <Info label="Эпизоды" value={anime.episodes} />
-                                <Info label="Возрастной рейтинг" value={anime.rating} />
+                                <Info label="Эпизодов доступно" value={anime.episodesAired} />
+                                <Info label="Возрастной рейтинг" value={RATING_FILTERS.find(k => k.key === anime.rating)?.label || "—"} />
                             </div>
                         </div>
                         {anime.nextEpisodeAt && (
@@ -119,7 +121,7 @@ export default async function AnimePage({ params }: any) {
                     <Screenshots screenshots={anime.screenshots.slice(0, 12)} />
                 )}
 
-                <div className="mt-10 px-5">
+                <div className="mt-10">
                     <Player id={id} />
                 </div>
 
