@@ -16,7 +16,10 @@ export const ANIME_QUERY = gql`
    $search: String, 
    $page: Int, 
    $status: AnimeStatusString,
-   $kind: AnimeKindString) {
+   $kind: AnimeKindString,
+   $order: OrderEnum,
+   $score: Int,
+   $rating: RatingString) {
     animes(
     ids: $ids, 
     limit: $limit, 
@@ -24,7 +27,10 @@ export const ANIME_QUERY = gql`
     search: $search, 
     page: $page, 
     status: $status,
-    kind: $kind) {
+    kind: $kind,
+    order: $order,
+    score: $score,
+    rating: $rating) {
       id
       malId
       name
