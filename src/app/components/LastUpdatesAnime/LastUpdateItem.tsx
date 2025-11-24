@@ -13,8 +13,9 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                 const translate = item?.translation?.title || "";
 
                 return (
-                    <Link key={item.id} href={`/anime/${item.shikimori_id}`}>
+                    <Link draggable={false} key={item.id} href={`/anime/${item.shikimori_id}`}>
                         <motion.div
+                            key={item.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1, duration: 0.6, type: "spring", stiffness: 100 }}
@@ -24,9 +25,11 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                                 <Image
                                     src={poster || ''}
                                     alt={title}
+                                    unoptimized
                                     fill
                                     className={`object-cover transition-transform duration-500 opacity-100 scale-100" group-hover:scale-105`}
                                     sizes="180px"
+                                    draggable={false}
                                 />
 
                                 <div className="absolute bottom-0 w-full h-10 flex items-center justify-center">

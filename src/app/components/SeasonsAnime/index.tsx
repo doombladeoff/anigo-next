@@ -3,6 +3,13 @@ import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 
+const seasonNames: Record<string, string> = {
+    winter: "зимнего",
+    spring: "весеннего",
+    summer: "летнего",
+    fall: "осеннего",
+};
+
 const SeasonsAnime = async () => {
     const { season, year } = getCurrentSeason();
 
@@ -13,20 +20,13 @@ const SeasonsAnime = async () => {
 
     if (!data?.animes?.length) return null;
 
-    const seasonNames: Record<string, string> = {
-        winter: "зимнего",
-        spring: "весеннего",
-        summer: "летнего",
-        fall: "осеннего",
-    };
-
     return (
         <>
-            <h1 className="px-15 font-semibold text-2xl mb-4">
+            <h1 className="px-5 sm:px-5 md:px-10 xl:px-15 font-semibold text-2xl mb-4">
                 Аниме {seasonNames[season]} сезона
             </h1>
 
-            <div className="flex gap-5 overflow-x-auto py-4 justify-center no-scrollbar">
+            <div className="flex gap-5 overflow-x-auto py-4 px-5 justify-start xl:justify-center no-scrollbar">
                 {data.animes.map((anime: any, index) => (
                     <Link
                         key={anime.id}
