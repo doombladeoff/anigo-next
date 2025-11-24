@@ -4,18 +4,22 @@ import SeasonsAnime from "./components/SeasonsAnime";
 
 export default function Home() {
   return (
-    <div className="min-h-screen min-w-screen bg-zinc-50 dark:bg-black text-black dark:text-white">
+    <div className="min-h-screen w-full bg-zinc-50 dark:bg-black text-black dark:text-white">
       <Header />
       <main
         className="
-          w-full 
-          mx-auto 
-          pt-18 
-          pb-10
+          w-full
+          pt-20
+          pb-16
         "
       >
-        <SeasonsAnime />
-        <LastUpdates />
+        <div className="mb-12">
+          <SeasonsAnime />
+        </div>
+
+        <div className="mb-10">
+          <LastUpdates />
+        </div>
       </main>
     </div>
   );
