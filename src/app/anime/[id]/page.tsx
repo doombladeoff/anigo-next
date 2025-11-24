@@ -1,4 +1,5 @@
 import NextEpisode from "@/app/components/AnimePage/NextEpisodeDate";
+import { Player } from "@/app/components/AnimePage/Player";
 import Screenshots from "@/app/components/AnimePage/Screenshots";
 import { ANIME_QUERY, client } from "@/lib/apollo";
 import { cleanDescription } from "@/utils/cleanDescription";
@@ -116,6 +117,10 @@ export default async function AnimePage({ params }: any) {
                 {anime?.screenshots?.length > 0 && (
                     <Screenshots screenshots={anime.screenshots.slice(0, 12)} />
                 )}
+
+                <div className="mt-5 px-5">
+                    <Player id={id} />
+                </div>
             </div>
         </div>
     );
