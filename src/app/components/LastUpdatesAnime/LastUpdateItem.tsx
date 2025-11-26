@@ -11,7 +11,7 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                 const poster = item?.material_data?.anime_poster_url || "";
                 const title = item?.title || "";
                 const translate = item?.translation?.title || "";
-
+                const isVisible = index < 10;
                 return (
                     <Link draggable={false} key={item.id} href={`/anime/${item.shikimori_id}`}>
                         <motion.div
@@ -30,6 +30,8 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                                     className={`object-cover transition-transform duration-500 opacity-100 scale-100" group-hover:scale-105`}
                                     sizes="180px"
                                     draggable={false}
+                                    loading={isVisible ? "eager" : "lazy"}
+                                    priority={isVisible}
                                 />
 
                                 <div className="absolute bottom-0 w-full h-10 flex items-center justify-center">

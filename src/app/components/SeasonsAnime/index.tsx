@@ -1,7 +1,8 @@
-import { ANIME_QUERY, client } from "@/lib/apollo";
+import { buildAnimeQuery, client } from "@/lib/apollo";
 import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
+import { AnimeFields } from "@/app/api/AnimeFields";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -10,13 +11,24 @@ const seasonNames: Record<string, string> = {
     fall: "осеннего",
 };
 
+const fields: AnimeFields = {
+    id: true,
+    russian: true,
+    poster: {
+        originalUrl: true
+    },
+    score: true,
+};
+const query = buildAnimeQuery(fields);
+
 const SeasonsAnime = async () => {
     const { season, year } = getCurrentSeason();
 
     const { data }: { data: { animes: any[] } | undefined } = await client.query({
-        query: ANIME_QUERY,
+        query: query,
         variables: { limit: 7, season: `${season}_${year}` },
     });
+    console.log('Season anime:', data);
 
     if (!data?.animes?.length) return null;
 

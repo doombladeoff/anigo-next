@@ -1,10 +1,13 @@
-import { ANIME_QUERY, client } from "@/lib/apollo";
+import { buildAnimeQuery, client } from "@/lib/apollo";
 import { OrderEnum } from "./OrderEnum";
+import { AnimeFields } from "./AnimeFields";
 
 export const getRandomAnime = async () => {
+    const fields: AnimeFields = { id: true };
+    const query = buildAnimeQuery(fields);
     try {
         const { data }: { data: any } = await client.query({
-            query: ANIME_QUERY,
+            query: query,
             variables: { order: OrderEnum.random, limit: 1, kind: 'tv,movie', status: 'ongoing,released', score: 7, rating: 'pg_13,r,r_plus' },
             fetchPolicy: "no-cache",
         });

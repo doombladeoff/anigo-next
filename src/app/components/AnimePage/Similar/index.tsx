@@ -23,15 +23,15 @@ export const SimilarAnime = async ({ id }: { id: string | number }) => {
         console.error("Ошибка загрузки похожих:", err);
         return null;
     }
-    
+
     if (!animes.length || !id) return;
 
     return (
         <div className="relative">
             <h2 className="text-2xl font-semibold mb-4 px-5">Похожие аниме</h2>
             <ScrollDrag>
-                {animes.slice(0, 15).map((similar) => (
-                    <SimilarItem key={similar.id} similar={similar} />
+                {animes.slice(0, 15).map((similar, index) => (
+                    <SimilarItem key={similar.id} similar={similar} index={index} />
                 ))}
             </ScrollDrag>
         </div>

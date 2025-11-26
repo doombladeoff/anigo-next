@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useIsMobile } from "@/hooks/useIsDesktop";
 import { SimilarAnimeType } from "./Similar.types";
 
-export const SimilarItem = ({ similar }: { similar: SimilarAnimeType }) => {
+export const SimilarItem = ({ similar, index }: { similar: SimilarAnimeType, index: number }) => {
     const isMobile = useIsMobile();
+    const isVisible = index < 10;
 
     return (
         <Link
@@ -26,10 +27,13 @@ export const SimilarItem = ({ similar }: { similar: SimilarAnimeType }) => {
                 <Image
                     src={`https://shikimori.one${similar.image.original}`}
                     alt={similar.russian}
-                    width={175}
-                    height={240}
                     draggable={false}
-                    className="object-cover w-full h-full  bg-neutral-700"
+                    width={175}
+                    height={270}
+                    style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                    className="bg-neutral-700"
+                    loading={isVisible ? "eager" : "lazy"}
+                    priority={isVisible}
                 />
                 {!isMobile && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 hover:opacity-100 transition-opacity duration-300 backdrop-blur-[1px]">

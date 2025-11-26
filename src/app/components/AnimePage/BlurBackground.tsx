@@ -10,6 +10,7 @@ export const BlurBackgoround = ({ img }: { img: string }) => {
                 unoptimized
                 priority
                 className="object-cover scale-110 blur-2xl opacity-60"
+                loading="eager"
             />
             <div className="absolute inset-0 bg-linear-to-b from-black/30 to-[#0a0a0c]" />
         </div>

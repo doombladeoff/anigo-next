@@ -22,8 +22,10 @@ export const SeasonItem = ({ item, index }: any) => {
                     alt={item?.russian || "season_poster"}
                     unoptimized
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105 bg-gray-600"
                     sizes="180px"
+                    loading={"eager"}
+                    fetchPriority='high'
                 />
 
                 {item?.score && (

@@ -8,73 +8,45 @@ export const client = new ApolloClient({
   cache,
 });
 
-export const ANIME_QUERY = gql`
-  query (
-   $ids: String,
-   $limit: Int, 
-   $season: SeasonString, 
-   $search: String, 
-   $page: Int, 
-   $status: AnimeStatusString,
-   $kind: AnimeKindString,
-   $order: OrderEnum,
-   $score: Int,
-   $rating: RatingString) {
-    animes(
-    ids: $ids, 
-    limit: $limit, 
-    season: $season, 
-    search: $search, 
-    page: $page, 
-    status: $status,
-    kind: $kind,
-    order: $order,
-    score: $score,
-    rating: $rating) {
-      id
-      malId
-      name
-      russian
-      english
-      japanese
-      synonyms
-      kind
-      rating
-      score
-      status
-      episodes
-      episodesAired
-      duration
-      nextEpisodeAt
-      airedOn { year month day date }
-      releasedOn { year month day date }
+export function buildFields(fieldsObj: any): string {
+  return Object.entries(fieldsObj)
+    .filter(([, v]) => v && (v === true || typeof v === "object"))
+    .map(([key, value]) =>
+      value === true
+        ? key
+        : `${key} { ${buildFields(value)} }`
+    )
+    .join("\n");
+}
 
-      poster { 
-        id 
-        originalUrl 
-        mainUrl
-        preview2xUrl
+export function buildAnimeQuery(fieldsObj: any) {
+  return gql`
+      query (
+        $ids: String,
+        $limit: Int, 
+        $season: SeasonString, 
+        $search: String, 
+        $page: Int, 
+        $status: AnimeStatusString,
+        $kind: AnimeKindString,
+        $order: OrderEnum,
+        $score: Int,
+        $rating: RatingString
+      ) {
+        animes(
+            ids: $ids, 
+            limit: $limit, 
+            season: $season, 
+            search: $search, 
+            page: $page, 
+            status: $status,
+            kind: $kind,
+            order: $order,
+            score: $score,
+            rating: $rating
+        ) {
+            ${buildFields(fieldsObj)}
+        }
       }
-
-      createdAt
-      updatedAt
-      nextEpisodeAt
-      isCensored
-
-      genres { id name russian kind }
-
-      related {
-        id
-        anime { id name }
-        manga { id name }
-        relationKind
-        relationText
-      }
-
-      screenshots { id originalUrl x166Url x332Url }
-
-      description
-      descriptionHtml
-    }
-  }
-`;
+    `;
+};

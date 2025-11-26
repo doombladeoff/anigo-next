@@ -1,25 +1,54 @@
+import { AnimeFields } from "@/app/api/AnimeFields";
 import { BlurBackgoround } from "@/app/components/AnimePage/BlurBackground";
+import { Description } from "@/app/components/AnimePage/Description";
 import NextEpisode from "@/app/components/AnimePage/NextEpisodeDate";
 import Player from "@/app/components/AnimePage/Player";
 import Screenshots from "@/app/components/AnimePage/Screenshots";
 import { SimilarAnime } from "@/app/components/AnimePage/Similar";
+import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import { KIND_FILTERS, RATING_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
-import { ANIME_QUERY, client } from "@/lib/apollo";
-import { cleanDescription } from "@/utils/cleanDescription";
+import { buildAnimeQuery, client } from "@/lib/apollo";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
+const fields: AnimeFields = {
+    id: true,
+    russian: true,
+    name: true,
+    episodes: true,
+    episodesAired: true,
+    nextEpisodeAt: true,
+    rating: true,
+    kind: true,
+    status: true,
+    descriptionHtml: true,
+    description: true,
+    poster: {
+        mainUrl: true,
+        originalUrl: true
+    },
+    screenshots: {
+        id: true,
+        originalUrl: true,
+        x332Url: true,
+    },
+    score: true,
+};
+const query = buildAnimeQuery(fields);
 
 export default async function AnimePage({ params }: any) {
     const { id } = await params;
 
     const getAnime = async () => {
+        console.log(query)
         const { data }: { data: any } = await client.query({
-            query: ANIME_QUERY,
+            query: query,
             variables: { ids: id, limit: 1 },
         });
 
-        return data?.animes?.[0];
+        console.log('Anime:', data);
+        return data?.animes?.[0] as ShikimoriAnime;
     };
 
     const getVideoLink = async () => {
@@ -67,6 +96,8 @@ export default async function AnimePage({ params }: any) {
                                 height={240}
                                 className="object-cover rounded-3xl overflow-hidden w-100"
                                 unoptimized
+                                loading="eager"
+                                draggable={false}
                             />
                         </div>
                     </div>
@@ -106,24 +137,7 @@ export default async function AnimePage({ params }: any) {
                     </div>
                 </div>
 
-                {(anime.description_html || anime.description) && (
-                    <div className="w-full flex-1 justify-center items-center self-center px-5 my-5 mt-10">
-                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-                            <h2 className="text-2xl font-semibold mb-4">Описание</h2>
-                            {anime.description_html ? (
-                                <div
-                                    className="prose prose-invert max-w-none opacity-90 leading-relaxed"
-                                    dangerouslySetInnerHTML={{ __html: anime.description_html || "Нет описания" }}
-                                />
-                            ) : (
-                                <p className="prose prose-invert max-w-none opacity-90 leading-relaxed">
-                                    {cleanDescription(anime.description || '') || "Нет описания"}
-                                </p>
-                            )}
-
-                        </div>
-                    </div>
-                )}
+                <Description htmlDescription={anime.descriptionHtml} description={anime.description} />
 
                 {anime?.screenshots?.length > 0 && (
                     <Screenshots screenshots={anime.screenshots.slice(0, 12)} />

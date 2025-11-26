@@ -4,8 +4,9 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { ScrollDrag } from "../ScrollDrag";
+import { Screenshot } from "@/app/types/Shikimori.types";
 
-export default function Screenshots({ screenshots }: any) {
+export default function Screenshots({ screenshots }: { screenshots: Screenshot[] }) {
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
     if (!screenshots || screenshots.length === 0) return null;
@@ -15,28 +16,33 @@ export default function Screenshots({ screenshots }: any) {
             <h2 className="text-2xl font-semibold px-5 mb-4">Кадры</h2>
 
             <ScrollDrag>
-                {screenshots.map((shot: any) => (
-                    <motion.div
-                        key={shot.id}
-                        layoutId={shot.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="shrink-0 cursor-pointer shadow-lg overflow-hidden"
-                        onClick={() => setSelectedImg(shot.id)}
-                    >
-                        <Image
-                            src={shot.x332Url}
-                            alt={`Screenshot ${shot.id}`}
-                            width={250}
-                            height={140}
-                            style={{ objectFit: "cover", width: "250px", height: "140px" }}
-                            className="w-[250px] h-[140px] object-cover"
-                            draggable={false}
-                            unoptimized
-                        />
-                    </motion.div>
-                ))}
+                {screenshots.map((shot: Screenshot, index) => {
+                    const isVisible = index < 8;
+                    return (
+                        <motion.div
+                            key={shot.id}
+                            layoutId={String(shot.id)}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.2 }}
+                            className="shrink-0 cursor-pointer shadow-lg overflow-hidden"
+                            onClick={() => setSelectedImg(String(shot.id))}
+                        >
+                            <Image
+                                src={shot.x332Url}
+                                alt={`Screenshot ${shot.id}`}
+                                width={250}
+                                height={140}
+                                style={{ objectFit: "cover", width: "250px", height: "140px" }}
+                                className="w-[250px] h-[140px] object-cover"
+                                draggable={false}
+                                unoptimized
+                                loading={isVisible ? "eager" : "lazy"}
+                                priority={isVisible}
+                            />
+                        </motion.div>
+                    )
+                })}
             </ScrollDrag>
 
             <AnimatePresence>
