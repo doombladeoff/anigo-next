@@ -1,4 +1,4 @@
-import { getRandomAnime } from "@/api/getRandomAnime";
+import { getRandomAnime } from "@/app/api/getRandomAnime";
 import { useRouter } from "next/navigation";
 import { Dice5Icon } from "lucide-react";
 

@@ -1,5 +1,6 @@
+import { BlurBackgoround } from "@/app/components/AnimePage/BlurBackground";
 import NextEpisode from "@/app/components/AnimePage/NextEpisodeDate";
-import { Player } from "@/app/components/AnimePage/Player";
+import Player from "@/app/components/AnimePage/Player";
 import Screenshots from "@/app/components/AnimePage/Screenshots";
 import { SimilarAnime } from "@/app/components/AnimePage/Similar";
 import { KIND_FILTERS, RATING_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
@@ -7,37 +8,43 @@ import { ANIME_QUERY, client } from "@/lib/apollo";
 import { cleanDescription } from "@/utils/cleanDescription";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 export default async function AnimePage({ params }: any) {
     const { id } = await params;
 
-    const { data }: { data: any } = await client.query({
-        query: ANIME_QUERY,
-        variables: { ids: id, limit: 1 },
-    });
+    const getAnime = async () => {
+        const { data }: { data: any } = await client.query({
+            query: ANIME_QUERY,
+            variables: { ids: id, limit: 1 },
+        });
 
-    const anime = data?.animes?.[0];
+        return data?.animes?.[0];
+    };
+
+    const getVideoLink = async () => {
+        const KODIK_TOKEN = process.env.KODIK_TOKEN;
+        const kodikRes = await fetch(`https://kodikapi.com/search?token=${KODIK_TOKEN}&shikimori_id=${id}&limit=1`);
+        const kodikData = await kodikRes.json();
+        const videolink = kodikData?.results?.[0]?.link || "";
+        return videolink;
+    };
+
+    const [anime, link] = await Promise.all([
+        await getAnime(),
+        await getVideoLink()
+    ]);
+
+    if (!anime || !link) notFound();
 
     return (
         <div className="min-h-screen w-full flex-1 flex bg-[#0a0a0c] text-white">
-            <div className="absolute inset-0 z-0 w-full h-[280px] sm:h-[340px] md:h-[420px] lg:h-[500px] overflow-hidden">
-                <Image
-                    src={anime.poster.mainUrl}
-                    alt="bg"
-                    fill
-                    unoptimized
-                    priority
-                    className="object-cover scale-110 blur-3xl opacity-60"
-                />
-
-                <div className="absolute inset-0 bg-linear-to-b from-black/30 to-[#0a0a0c]" />
-            </div>
-
+            <BlurBackgoround img={anime?.poster.mainUrl} />
             <div className="py-20 xl:pt-30 w-full">
                 <div className="
                     flex 
                     flex-col 
-                    xl:flex-row 
+                    md:flex-row 
                     gap-8 
                     items-center
                     justify-center
@@ -56,19 +63,20 @@ export default async function AnimePage({ params }: any) {
                             <Image
                                 src={anime?.poster?.originalUrl || ""}
                                 alt="poster"
-                                fill
-                                className="object-cover rounded-3xl overflow-hidden"
+                                width={100}
+                                height={240}
+                                className="object-cover rounded-3xl overflow-hidden w-100"
                                 unoptimized
                             />
                         </div>
                     </div>
 
                     <div className="z-0 flex flex-col gap-4">
-                        <h1 className="text-center sm:text-left text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
-                            {anime.russian || anime.name}
+                        <h1 className="text-center sm:text-left text-3xl max-w-200 sm:text-4xl md:text-5xl font-bold leading-tight">
+                            {anime?.russian || anime?.name}
                         </h1>
 
-                        {anime.score && (
+                        {anime?.score && (
                             <div className="flex flex-row gap-2">
                                 <StarIcon
                                     size={32}
@@ -76,7 +84,7 @@ export default async function AnimePage({ params }: any) {
                                     color="rgb(92, 220, 52)"
                                 />
                                 <span className="text-3xl font-semibold text-[rgb(92,220,52)]">
-                                    {anime.score}
+                                    {anime?.score}
                                 </span>
                             </div>
                         )}
@@ -121,14 +129,15 @@ export default async function AnimePage({ params }: any) {
                     <Screenshots screenshots={anime.screenshots.slice(0, 12)} />
                 )}
 
-                <div className="mt-10">
-                    <Player id={id} />
-                </div>
+                {id && (
+                    <div className="mt-10">
+                        <Player link={link} id={id} />
+                    </div>
+                )}
 
                 <div className="mt-10">
                     <SimilarAnime id={id} />
                 </div>
-
             </div>
         </div>
     );

@@ -26,7 +26,7 @@ const SeasonsAnime = async () => {
                 Аниме {seasonNames[season]} сезона
             </h1>
 
-            <div className="flex gap-5 overflow-x-auto py-4 px-5 justify-start xl:justify-center no-scrollbar">
+            <div className="flex gap-5 overflow-x-auto py-4 px-5 justify-start xl:justify-center hide-scrollbar">
                 {data.animes.map((anime: any, index) => (
                     <Link
                         key={anime.id}
