@@ -3,8 +3,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { StarIcon } from "lucide-react";
+import { KIND_FILTERS } from "../SearchOverlay";
 
 export const SearchItem = ({ el, index }: any) => {
+    const kindLabel = KIND_FILTERS.find(k => k.key === el?.kind)?.label;
     return (
         <motion.div
             initial={{ opacity: 0, y: 0 }}
@@ -19,7 +21,7 @@ export const SearchItem = ({ el, index }: any) => {
             {/* Poster */}
             <div className="relative w-[90px] h-[140px] rounded-xl overflow-hidden">
                 <Image
-                    src={el.poster.originalUrl}
+                    src={el.poster.preview2xUrl}
                     alt={`poster-${el?.title}`}
                     fill
                     sizes="90px"
@@ -34,7 +36,7 @@ export const SearchItem = ({ el, index }: any) => {
                 </p>
 
                 <p className="text-white/60 text-sm mt-1">
-                    {el.kind} • {el?.airedOn?.year}
+                    {kindLabel || el.kind} • {el?.airedOn?.year}
                 </p>
 
                 {el.status === "anons" ? (

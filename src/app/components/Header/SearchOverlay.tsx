@@ -2,9 +2,11 @@ import { SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SearchItem } from "./Search/SearchItem";
-import { ANIME_QUERY, client } from "@/lib/apollo";
+import { buildAnimeQuery, client } from "@/lib/apollo";
 import { StatusFilter } from "./Search/StatusFilter";
 import { KindFilter } from "./Search/KindFilter";
+import { SortDropdown } from "./Search/SortDropDown";
+import { AnimeFields } from "@/app/api/AnimeFields";
 
 const limit = 20;
 const STATUS_FILTERS = [
@@ -19,21 +21,53 @@ export const KIND_FILTERS = [
     { key: "ona", label: "ONA" },
     { key: "tv_special", label: "Спешл" },
 ];
+const SORT_OPTIONS = [
+    { key: "id", label: "ID" },
+    { key: "id_desc", label: "ID Desc" },
+    { key: "ranked", label: "Ранк" },
+    { key: "kind", label: "Тип" },
+    { key: "popularity", label: "Популяронсть" },
+    { key: "name", label: "Тип" },
+    { key: "aired_on", label: "По релизу" },
+    { key: "name", label: "Тип" },
+    { key: "status", label: "Статус" },
+    { key: "random", label: "Рандом" },
+    { key: "ranked_random", label: "Ранкед рандом" },
+    { key: "random_shiki", label: "Рандом шики" },
+];
 
 export const SearchOverlay = () => {
     const [queryText, setQueryText] = useState('');
     const [status, setStatus] = useState<string[]>([]);
     const [kind, setKind] = useState<string[]>([]);
+    const [sort, setSort] = useState("rating");
     const [data, setData] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
+
+    const fields: AnimeFields = {
+        id: true,
+        russian: true,
+        name: true,
+        airedOn: {
+            year: true
+        },
+        kind: true,
+        score: true,
+        status: true,
+        poster: {
+            preview2xUrl: true,
+        },
+    };
+    const query = buildAnimeQuery(fields);
+
     const scrollRef = useRef<HTMLDivElement | null>(null);
     const resetScrollTop = () => {
         if (scrollRef.current) scrollRef.current.scrollTop = 0;
     };
-    
+
     const fetchPage = async (pageNumber: number, reset = false) => {
         if (loading) return;
         setLoading(true);
@@ -43,7 +77,7 @@ export const SearchOverlay = () => {
 
         try {
             const { data }: { data: any } = await client.query({
-                query: ANIME_QUERY,
+                query: query,
                 variables: {
                     search: queryText || undefined,
                     limit,
@@ -158,6 +192,7 @@ export const SearchOverlay = () => {
                     <div className="flex flex-col gap-5">
                         <StatusFilter statusArr={STATUS_FILTERS} activeArr={status} toggleStatus={toggleStatus} />
                         <KindFilter kindArr={KIND_FILTERS} activeKindArr={kind} toggleKind={toggleKind} />
+                        <SortDropdown options={SORT_OPTIONS} selected={sort} onChange={setSort} />
                     </div>
                 </div>
             </div>
