@@ -1,55 +1,17 @@
-import { AnimeFields } from "@/app/api/AnimeFields";
+import { getAnime } from "@/app/api/getAnime";
 import { BlurBackgoround } from "@/app/components/AnimePage/BlurBackground";
 import { Description } from "@/app/components/AnimePage/Description";
 import NextEpisode from "@/app/components/AnimePage/NextEpisodeDate";
 import Player from "@/app/components/AnimePage/Player";
 import Screenshots from "@/app/components/AnimePage/Screenshots";
 import { SimilarAnime } from "@/app/components/AnimePage/Similar";
-import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import { KIND_FILTERS, RATING_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
-import { buildAnimeQuery, client } from "@/lib/apollo";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-const fields: AnimeFields = {
-    id: true,
-    russian: true,
-    name: true,
-    episodes: true,
-    episodesAired: true,
-    nextEpisodeAt: true,
-    rating: true,
-    kind: true,
-    status: true,
-    descriptionHtml: true,
-    description: true,
-    poster: {
-        mainUrl: true,
-        originalUrl: true
-    },
-    screenshots: {
-        id: true,
-        originalUrl: true,
-        x332Url: true,
-    },
-    score: true,
-};
-const query = buildAnimeQuery(fields);
-
 export default async function AnimePage({ params }: any) {
     const { id } = await params;
-
-    const getAnime = async () => {
-        console.log(query)
-        const { data }: { data: any } = await client.query({
-            query: query,
-            variables: { ids: id, limit: 1 },
-        });
-
-        console.log('Anime:', data);
-        return data?.animes?.[0] as ShikimoriAnime;
-    };
 
     const getVideoLink = async () => {
         const KODIK_TOKEN = process.env.KODIK_TOKEN;
@@ -60,7 +22,7 @@ export default async function AnimePage({ params }: any) {
     };
 
     const [anime, link] = await Promise.all([
-        await getAnime(),
+        await getAnime(id),
         await getVideoLink()
     ]);
 
@@ -68,7 +30,7 @@ export default async function AnimePage({ params }: any) {
 
     return (
         <div className="min-h-screen w-full flex-1 flex bg-[#0a0a0c] text-white">
-            <BlurBackgoround img={anime?.poster.mainUrl} />
+            <BlurBackgoround img={anime?.poster.preview2xUrl} />
             <div className="py-20 xl:pt-30 w-full">
                 <div className="
                     flex 
@@ -90,7 +52,7 @@ export default async function AnimePage({ params }: any) {
                             "
                         >
                             <Image
-                                src={anime?.poster?.originalUrl || ""}
+                                src={anime?.poster?.main2xUrl || ""}
                                 alt="poster"
                                 width={100}
                                 height={240}
