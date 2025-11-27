@@ -2,7 +2,7 @@ export const KindFilter = ({ kindArr, toggleKind, activeKindArr }: { kindArr: an
     return (
         <div className="space-y-6 text-white/90">
             <h3 className="text-lg font-semibold mb-2">Тип</h3>
-            <div className="flex gap-4 flex-wrap">
+            <div className="gap-5 flex-wrap grid grid-cols-2">
                 {kindArr.map((item) => {
                     const active = activeKindArr.includes(item.key);
                     return (

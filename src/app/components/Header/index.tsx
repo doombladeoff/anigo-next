@@ -2,16 +2,31 @@
 
 import { MenuIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SearchOverlay } from "./SearchOverlay";
 import { RandomAnimeButton } from "./RandomAnimeButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { HeaderLogo } from "./HeaderLogo";
 import { HeaderNavigation } from "./HeaderNavigation";
+import { usePathname } from "next/navigation";
+import { useIsMobile } from "@/hooks/useIsDesktop";
 
 const Header = () => {
     const [searchMode, setSearchMode] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const pathname = usePathname();
+    const isMobile = useIsMobile();
+
+    useEffect(() => {
+        if (searchMode) {
+            document.body.style.overflow = "hidden";  // disable scroll
+        } else {
+            document.body.style.overflow = "";        // restore scroll
+        }
+    }, [searchMode]);
+
+    if (pathname === '/anime' && isMobile) return;
 
     return (
         <>
@@ -53,9 +68,9 @@ const Header = () => {
             {searchMode && (
                 <div
                     onClick={() => setSearchMode(false)}
-                    className="fixed inset-0 z-50 bg-black/70 backdrop-blur-2xl flex items-center justify-center p-6 animate-fade"
+                    className="fixed inset-0 z-50 bg-black/70 backdrop-blur-2xl flex items-center justify-center animate-fade overflow-hidden"
                 >
-                    <SearchOverlay />
+                    <SearchOverlay closeModal={setSearchMode} />
                 </div>
             )}
 
@@ -82,7 +97,7 @@ const Header = () => {
                             exit={{ x: 300 }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         >
-                            <HeaderNavigation />
+                            <HeaderNavigation closeMenu={() => setMenuOpen(false)} />
                             <RandomAnimeButton onCloseMenu={setMenuOpen} />
                             <Link href="/auth/login">
                                 <button onClick={() => setMenuOpen(false)} className="mt-4 px-3 py-2 w-full bg-white/10 border border-white/10 rounded-xl text-sm hover:bg-white/20 transition">

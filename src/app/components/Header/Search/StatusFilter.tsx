@@ -2,7 +2,7 @@ export const StatusFilter = ({ statusArr, toggleStatus, activeArr }: { statusArr
     return (
         <div className="space-y-6 text-white/90">
             <h3 className="text-lg font-semibold mb-2">Статус</h3>
-            <div className="flex gap-4 flex-wrap">
+            <div className="gap-5 flex-wrap grid grid-cols-2">
                 {statusArr.map((item) => {
                     const active = activeArr.includes(item.key);
                     return (

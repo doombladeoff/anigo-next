@@ -1,4 +1,4 @@
-import { SearchIcon } from "lucide-react";
+import { ArrowDownNarrowWideIcon, ArrowLeftIcon, SearchIcon, SlidersHorizontalIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SearchItem } from "./Search/SearchItem";
@@ -7,36 +7,13 @@ import { StatusFilter } from "./Search/StatusFilter";
 import { KindFilter } from "./Search/KindFilter";
 import { SortDropdown } from "./Search/SortDropDown";
 import { AnimeFields } from "@/app/api/AnimeFields";
+import { useIsMobile } from "@/hooks/useIsDesktop";
+import { KIND_FILTERS, SORT_OPTIONS, STATUS_FILTERS } from "@/contants/Filters";
+import { AnimatePresence, motion } from "framer-motion";
 
 const limit = 20;
-const STATUS_FILTERS = [
-    { key: "anons", label: "Анонс" },
-    { key: "ongoing", label: "Онгоинг" },
-    { key: "released", label: "Завершён" },
-];
-export const KIND_FILTERS = [
-    { key: "tv", label: "TV" },
-    { key: "movie", label: "Фильм" },
-    { key: "ova", label: "OVA" },
-    { key: "ona", label: "ONA" },
-    { key: "tv_special", label: "Спешл" },
-];
-const SORT_OPTIONS = [
-    { key: "id", label: "ID" },
-    { key: "id_desc", label: "ID Desc" },
-    { key: "ranked", label: "Ранк" },
-    { key: "kind", label: "Тип" },
-    { key: "popularity", label: "Популяронсть" },
-    { key: "name", label: "Тип" },
-    { key: "aired_on", label: "По релизу" },
-    { key: "name", label: "Тип" },
-    { key: "status", label: "Статус" },
-    { key: "random", label: "Рандом" },
-    { key: "ranked_random", label: "Ранкед рандом" },
-    { key: "random_shiki", label: "Рандом шики" },
-];
 
-export const SearchOverlay = () => {
+export const SearchOverlay = ({ closeModal }: { closeModal: (v: boolean) => void }) => {
     const [queryText, setQueryText] = useState('');
     const [status, setStatus] = useState<string[]>([]);
     const [kind, setKind] = useState<string[]>([]);
@@ -46,6 +23,9 @@ export const SearchOverlay = () => {
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
+    const [openFilters, setOpenFilters] = useState(false)
+
+    const isMobile = useIsMobile();
 
     const fields: AnimeFields = {
         id: true,
@@ -59,6 +39,7 @@ export const SearchOverlay = () => {
         status: true,
         poster: {
             preview2xUrl: true,
+            main2xUrl: true,
         },
     };
     const query = buildAnimeQuery(fields);
@@ -88,6 +69,7 @@ export const SearchOverlay = () => {
                 fetchPolicy: "network-only",
             });
 
+            console.log('Search:', data)
             const list = data.animes as any[];
 
             setData(prev => reset ? list : [...prev, ...list]);
@@ -99,6 +81,10 @@ export const SearchOverlay = () => {
 
         setLoading(false);
     };
+
+    useEffect(() => {
+        fetchPage(1, true);
+    }, []);
 
     useEffect(() => {
         resetScrollTop();
@@ -144,58 +130,153 @@ export const SearchOverlay = () => {
         setPage(1);
     };
 
+    if (!false) return;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-            <div className="flex gap-6 w-full max-w-5xl">
-                {/* LEFT: SEARCH RESULTS */}
+        <div className={`fixed inset-0 z-50 flex items-center justify-center sm:p-6 xl:max-w-900`}>
+            <div className="flex gap-6 w-full h-full">
                 <div
                     onClick={(e) => e.stopPropagation()}
-                    className="flex-1 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-3xl p-6 shadow-[0_0_50px_rgba(255,255,255,0.15)] animate-slideDown"
+                    className={`
+                        rounded-3xl 
+                        bg-white/10 
+                        border border-white/20 
+                        backdrop-blur-3xl 
+                        shadow-[0_0_50px_rgba(255,255,255,0.15)] 
+                        animate-slideDown
+                        ${isMobile ? "h-full w-full p-4" : ""}
+                    `}
                 >
-                    <div className="relative">
-                        <input
-                            value={queryText}
-                            onChange={(e) => setQueryText(e.target.value)}
-                            type="text"
-                            placeholder="Solo Leveling, Jujutsu Kaisen, Naruto"
-                            className="w-full p-4 pl-12 rounded-2xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-inner"
-                        />
-                        <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={20} />
-                    </div>
-
-                    <div
-                        ref={scrollRef}
-                        className="overflow-y-auto h-[520px] mt-6 pr-2 no-scrollbar space-y-4"
-                    >
-                        {data.length > 0 ? (
-                            data.map((el, index) => (
-                                <Link href={`/anime/${el.id}`} key={`${el.id}-${index}`} className="block">
-                                    <SearchItem el={el} index={index} />
-                                </Link>
-                            ))
-                        ) : queryText && !loading ? (
-                            <p className="text-center text-white/70 py-10 text-lg">Ничего не найдено</p>
-                        ) : null}
-
-                        {loading && (
-                            <div className="text-center text-white/70 py-6 animate-pulse">Загрузка...</div>
+                    <div className="w-full">
+                        {isMobile && (
+                            <div className="flex flex-row w-full items-center justify-between mb-5">
+                                <button className="relative flex flex-row items-center" onClick={() => closeModal(false)}>
+                                    <ArrowLeftIcon size={24} color="white" onClick={() => document.body.classList.remove("overflow-hidden")} />
+                                    Назад
+                                </button>
+                                <div className="flex flex-row items-center gap-4">
+                                    <button className="relative flex flex-row items-center" onClick={() => { }}>
+                                        <ArrowDownNarrowWideIcon size={24} color="white" />
+                                        Сортировка
+                                    </button>
+                                    <button className="relative flex flex-row items-center" onClick={() => setOpenFilters(!openFilters)}>
+                                        <SlidersHorizontalIcon size={24} color="white" />
+                                        Фильтр
+                                    </button>
+                                </div>
+                            </div>
                         )}
+
+                        <div className="relative">
+                            <input
+                                value={queryText}
+                                onChange={(e) => setQueryText(e.target.value)}
+                                type="text"
+                                placeholder="Solo Leveling, Jujutsu Kaisen, Naruto"
+                                className="w-full p-4 pl-12 rounded-2xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-inner"
+                            />
+                            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={20} />
+                        </div>
                     </div>
+
+                    {data?.length > 0 ? (
+                        <div
+                            ref={scrollRef}
+                            className={`mt-4 ${isMobile ? "h-full" : "h-[520px]"} grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 xl:grid-cols-6 gap-4`}
+                        >
+                            {
+                                data.map((el, index) => (
+                                    <Link href={`/anime/${el.id}`} key={`${el.id}-${index}`} onClick={() => closeModal(false)} className="block">
+                                        <SearchItem el={el} index={index} />
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    ) : null}
+                    {(queryText && !loading) && (
+                        <p className="w-full text-center text-white/70 py-10 text-lg">Ничего не найдено</p>
+                    )}
+
+                    {loading && (
+                        <div className="text-center text-white/70 py-6 animate-pulse">Загрузка...</div>
+                    )}
                 </div>
 
-                {/* RIGHT: FILTERS */}
-                <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="animate-slideDown w-[280px] rounded-3xl p-6 bg-white/10 border border-white/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]"
-                >
-                    <h4 className="text-xl font-semibold text-white mb-4 w-full text-center">Фильтры</h4>
-                    <div className="flex flex-col gap-5">
-                        <StatusFilter statusArr={STATUS_FILTERS} activeArr={status} toggleStatus={toggleStatus} />
-                        <KindFilter kindArr={KIND_FILTERS} activeKindArr={kind} toggleKind={toggleKind} />
-                        <SortDropdown options={SORT_OPTIONS} selected={sort} onChange={setSort} />
+                {(!isMobile || openFilters) && (
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="animate-slideDown max-w-330 rounded-3xl p-6 bg-white/10 border border-white/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+                    >
+                        <h4 className="text-xl font-semibold text-white mb-4 w-full text-center">Фильтры</h4>
+                        <div className="flex flex-col gap-5">
+                            <StatusFilter statusArr={STATUS_FILTERS} activeArr={status} toggleStatus={toggleStatus} />
+                            <KindFilter kindArr={KIND_FILTERS} activeKindArr={kind} toggleKind={toggleKind} />
+                            {/* <SortDropdown options={SORT_OPTIONS} selected={sort} onChange={setSort} /> */}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
+
+            <AnimatePresence>
+                {openFilters && (
+                    <motion.div
+                        onClick={() => setOpenFilters(false)}
+                        className="fixed inset-0 z-[60] bg-black/60 md:hidden"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <motion.div
+                            onClick={(e) => e.stopPropagation()}
+                            className="
+                    absolute right-0 top-0 h-full max-w-440
+                    bg-white/10 backdrop-blur-xl 
+                    border-l border-white/20 
+                    p-6 flex flex-col gap-6
+                    shadow-[0_0_40px_rgba(255,255,255,0.15)]
+                "
+                            initial={{ x: 300 }}
+                            animate={{ x: 0 }}
+                            exit={{ x: 300 }}
+                            transition={{ type: 'spring', stiffness: 260, damping: 30 }}
+                        >
+                            <div>
+                                <button className="relative flex flex-row items-center" onClick={() => closeModal(false)}>
+                                    <ArrowLeftIcon size={24} color="white" onClick={() => document.body.classList.remove("overflow-hidden")} />
+                                    Назад
+                                </button>
+                                <h4 className="text-xl font-semibold text-white mb-4 w-full text-center">
+                                    Фильтры
+                                </h4>
+                            </div>
+
+
+                            <StatusFilter
+                                statusArr={STATUS_FILTERS}
+                                activeArr={status}
+                                toggleStatus={toggleStatus}
+                            />
+                            <KindFilter
+                                kindArr={KIND_FILTERS}
+                                activeKindArr={kind}
+                                toggleKind={toggleKind}
+                            />
+                            <SortDropdown
+                                options={SORT_OPTIONS}
+                                selected={sort}
+                                onChange={setSort}
+                            />
+
+                            <button
+                                onClick={() => setOpenFilters(false)}
+                                className="mt-auto py-3 bg-white/20 rounded-xl text-white"
+                            >
+                                Закрыть
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
