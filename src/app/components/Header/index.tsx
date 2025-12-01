@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SearchOverlay } from "./Search/SearchOverlay";
 import { RandomAnimeButton } from "./RandomAnimeButton";
-import { motion, AnimatePresence } from "framer-motion";
 import { HeaderLogo } from "./HeaderLogo";
 import { HeaderNavigation } from "./HeaderNavigation";
 import { usePathname } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsDesktop";
+import { SideMenu } from "./SideMenu";
 
 const Header = () => {
     const [searchMode, setSearchMode] = useState(false);
@@ -19,12 +19,12 @@ const Header = () => {
     const isMobile = useIsMobile();
 
     useEffect(() => {
-        if (searchMode) {
-            document.body.style.overflow = "hidden";  // disable scroll
+        if (searchMode || menuOpen) {
+            document.body.style.overflow = "hidden";
         } else {
-            document.body.style.overflow = "";        // restore scroll
+            document.body.style.overflow = "";
         }
-    }, [searchMode]);
+    }, [searchMode, menuOpen]);
 
     if (pathname === '/anime' && isMobile) return;
 
@@ -65,45 +65,9 @@ const Header = () => {
                 </div>
             </header>
 
-            {searchMode && (
+            {searchMode && <SearchOverlay closeModal={setSearchMode} />}
 
-                <SearchOverlay closeModal={setSearchMode} />
-            )}
-
-            <AnimatePresence>
-                {menuOpen && (
-                    <motion.div
-                        onClick={() => setMenuOpen(false)}
-                        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md md:hidden"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <motion.div
-                            onClick={(e) => e.stopPropagation()}
-                            className="
-                                absolute right-0 top-0 h-full w-64 
-                                bg-black/80 backdrop-blur-xl 
-                                border-l border-white/10 
-                                p-6 flex flex-col gap-6
-                            "
-                            initial={{ x: 300 }}
-                            animate={{ x: 0 }}
-                            exit={{ x: 300 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        >
-                            <HeaderNavigation closeMenu={() => setMenuOpen(false)} />
-                            <RandomAnimeButton onCloseMenu={setMenuOpen} />
-                            <Link href="/auth/login">
-                                <button onClick={() => setMenuOpen(false)} className="mt-4 px-3 py-2 w-full bg-white/10 border border-white/10 rounded-xl text-sm hover:bg-white/20 transition">
-                                    Войти
-                                </button>
-                            </Link>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <SideMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         </>
     );
 };
