@@ -3,7 +3,7 @@
 import { MenuIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { SearchOverlay } from "./SearchOverlay";
+import { SearchOverlay } from "./Search/SearchOverlay";
 import { RandomAnimeButton } from "./RandomAnimeButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { HeaderLogo } from "./HeaderLogo";
@@ -66,12 +66,8 @@ const Header = () => {
             </header>
 
             {searchMode && (
-                <div
-                    onClick={() => setSearchMode(false)}
-                    className="fixed inset-0 z-50 bg-black/70 backdrop-blur-2xl flex items-center justify-center animate-fade overflow-hidden"
-                >
-                    <SearchOverlay closeModal={setSearchMode} />
-                </div>
+
+                <SearchOverlay closeModal={setSearchMode} />
             )}
 
             <AnimatePresence>

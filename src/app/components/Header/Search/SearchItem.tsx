@@ -1,27 +1,22 @@
-'use client'
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { KIND_FILTERS } from "@/contants/Filters";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 
 export const SearchItem = ({ el, index }: { el: ShikimoriAnime, index: number }) => {
     const kindLabel = KIND_FILTERS.find(k => k.key === el?.kind)?.label;
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: 0.03 }}
-        >
+        <div>
             <div className="relative w-full aspect-2/3 rounded-xl">
                 {el?.poster?.main2xUrl && (
                     <Image
                         draggable={false}
-                        src={el?.poster?.main2xUrl}
+                        src={el?.poster?.preview2xUrl}
                         alt={el.russian}
                         fill
-                        sizes="(max-width: 640px) 33vw, (max-width: 1024px) 20vw, 15vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300 rounded-md bg-gray-600/20"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover rounded-md bg-gray-600/20"
+                        loading={index < 10 ? "eager" : "lazy"}
+                        quality={75}
                     />
                 )}
 
@@ -49,6 +44,6 @@ export const SearchItem = ({ el, index }: { el: ShikimoriAnime, index: number })
                     {kindLabel || el.kind} {el.kind === 'tv' ? 'Сериал' : ''}
                 </p>
             </div>
-        </motion.div>
+        </div>
     );
 };

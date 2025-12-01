@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimeFields } from "../api/AnimeFields";
 import { buildAnimeQuery, client } from "@/lib/apollo";
 import Link from "next/link";
@@ -15,7 +15,6 @@ import { SearchSkeleton } from "../components/SearchPage/SearchSkeleton";
 const fields: AnimeFields = {
     id: true,
     russian: true,
-    name: true,
     airedOn: { year: true },
     kind: true,
     score: true,
@@ -27,7 +26,7 @@ const fields: AnimeFields = {
 };
 
 const query = buildAnimeQuery(fields);
-
+const limit = 20;
 export default function AnimeSearchPage() {
     const [queryText, setQueryText] = useState<string>('');
     const [status, setStatus] = useState<string[]>([]);
@@ -43,7 +42,7 @@ export default function AnimeSearchPage() {
 
     const isMobile = useIsMobile();
 
-    const fetchPage = async (pageNumber: number, reset = false) => {
+    const fetchPage = useCallback(async (pageNumber: number, reset = false) => {
         if (loading) return;
         setLoading(true);
 
@@ -55,7 +54,7 @@ export default function AnimeSearchPage() {
                 query,
                 variables: {
                     ...(queryText.length > 0 && { search: queryText }),
-                    limit: 40,
+                    limit: limit,
                     page: pageNumber,
                     ...(formatStatus && { status: formatStatus }),
                     ...(formatKind && { kind: formatKind }),
@@ -66,13 +65,13 @@ export default function AnimeSearchPage() {
             const list = data.animes || [];
 
             setData(prev => (reset ? list : [...prev, ...list]));
-            setHasMore(list.length === 40);
+            setHasMore(list.length === limit);
         } catch (err) {
             console.error("API ERROR:", err);
         }
 
         setLoading(false);
-    };
+    }, [loading, status, kind]);
 
     useEffect(() => {
         fetchPage(1, true);
@@ -210,7 +209,6 @@ export default function AnimeSearchPage() {
                                     Array.from({ length: 20 }).map((_, i) => <SearchSkeleton key={i} />)
                                 ) : data.length > 0 && (
                                     <>
-                                        {/* Data */}
                                         {data.map((el, index) => (
                                             <Link href={`/anime/${el.id}`} key={`${el.id}-${index}`} className="block">
                                                 <SearchItem el={el} index={index} />

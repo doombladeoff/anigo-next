@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
+import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -21,16 +22,21 @@ const fields: AnimeFields = {
 };
 const query = buildAnimeQuery(fields);
 
+type AnimeQueryResult = {
+    animes: ShikimoriAnime[];
+};
+
 const SeasonsAnime = async () => {
     const { season, year } = getCurrentSeason();
 
-    const { data }: { data: { animes: any[] } | undefined } = await client.query({
+    const { data, error } = await client.query<AnimeQueryResult>({
         query: query,
         variables: { limit: 7, season: `${season}_${year}` },
     });
     console.log('Season anime:', data);
 
     if (!data?.animes?.length) return null;
+    if (error) return null;
 
     return (
         <>
