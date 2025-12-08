@@ -17,7 +17,7 @@ export default async function AnimePage({ params }: any) {
     if (!link) notFound();
 
     return (
-        <div className="min-h-screen w-full flex-1 flex bg-[#0a0a0c] text-white">
+        <div className="min-h-screen w-full flex-1 flex">
             <PageContent id={id} link={link} />
         </div>
     );

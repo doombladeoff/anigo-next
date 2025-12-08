@@ -12,7 +12,14 @@ export const BlurBackgoround = ({ img }: { img: string }) => {
                 className="object-cover scale-110 blur-2xl opacity-60"
                 loading="eager"
             />
-            <div className="absolute inset-0 bg-linear-to-b from-black/30 to-[#0a0a0c]" />
+
+            <div
+                className="
+                    absolute inset-0 bg-linear-to-b
+                    from-white/50 to-white
+                    dark:from-black/30 dark:to-[#0a0a0c]
+                "
+            />
         </div>
     );
 };

@@ -94,14 +94,11 @@ export const PageContent = ({ id, link }: { id: string, link: string }) => {
                     justify-center
                     px-5
                 ">
-                    <div className="relative w-68 h-106 shadow-2xl perspective-[1000px] group">
-                        <div
-                            className="
-                                relative w-full h-full rounded-3xl overflow-hidden
-                                transition-transform duration-500 transform-gpu will-change-transform
-                                group-hover:transform-[rotateY(8deg)_rotateX(6deg)_scale(1.05)]
-                                group-hover:shadow-2xl group-hover:shadow-black/40
-                                transform-3d
+                    <div className="relative w-68 perspective-[1000px] group">
+                        <div className="relative w-full rounded-3xl overflow-hidden transition-transform duration-500 transform-gpu will-change-transform
+                            group-hover:rotate-y-[8deg] group-hover:rotate-x-[6deg] group-hover:scale-[1.05]
+                            group-hover:shadow-2xl group-hover:shadow-black/40
+                            [backface-visibility:hidden] [transform-style:preserve-3d]
                             "
                         >
                             <Image
@@ -109,13 +106,15 @@ export const PageContent = ({ id, link }: { id: string, link: string }) => {
                                 alt="poster"
                                 width={100}
                                 height={240}
-                                className="object-cover rounded-3xl overflow-hidden w-100"
+                                className="object-cover w-full h-full"
                                 unoptimized
                                 loading="eager"
                                 draggable={false}
                             />
                         </div>
                     </div>
+
+
 
                     <div className="z-0 flex flex-col gap-4">
                         <h1 className="text-center sm:text-left text-3xl max-w-200 sm:text-4xl md:text-5xl font-bold leading-tight">
@@ -173,7 +172,7 @@ export const PageContent = ({ id, link }: { id: string, link: string }) => {
 function Info({ label, value }: any) {
     return (
         <div className="flex justify-between bg-white/5 p-3 rounded-xl border border-white/10">
-            <span className="text-white/50">{label}</span>
+            <span>{label}</span>
             <span className="font-semibold">{value || "—"}</span>
         </div>
     );
