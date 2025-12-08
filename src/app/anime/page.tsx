@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimeFields } from "../api/AnimeFields";
 import { buildAnimeQuery, client } from "@/lib/apollo";
 import Link from "next/link";
-import { SearchItem } from "../components/Header/Search/SearchItem";
+import { SearchItem } from "../../components/Header/Search/SearchItem";
 import { SearchIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/useIsDesktop";
-import { Header } from "../components/SearchPage/Header";
-import { MobileFilters } from "../components/SearchPage/MobileFilters";
-import { Filters } from "../components/SearchPage/Filters";
-import { SearchSkeleton } from "../components/SearchPage/SearchSkeleton";
+import { Header } from "../../components/SearchPage/Header";
+import { MobileFilters } from "../../components/SearchPage/MobileFilters";
+import { Filters } from "../../components/SearchPage/Filters";
+import { SearchSkeleton } from "../../components/SearchPage/SearchSkeleton";
+import { Input } from "@/components/ui/input";
 
 const fields: AnimeFields = {
     id: true,
@@ -127,6 +128,10 @@ export default function AnimeSearchPage() {
         return () => { document.body.style.overflow = '' };
     }, [openFilters]);
 
+    useEffect(() => {
+        console.log('Status changed: ', status);
+    }, [status])
+
     const toggleStatus = (value: string) => {
         setStatus(prev => prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]);
     };
@@ -154,48 +159,20 @@ export default function AnimeSearchPage() {
     return (
         <>
             {isMobile && <Header openFilters={handleOpenFilters} />}
-            <div className="flex-1 flex justify-center py-15 md:py-20">
+            <div className="flex-1 flex justify-center py-15 md:py-10">
                 <div className="flex flex-row gap-10 w-full max-w-6xl">
                     {/* LEFT side (scrolls with the page) */}
                     <div
                         ref={scrollRef}
                         className={`flex-1 bg-white/10 rounded-md p-4 ${!data.length ? '' : 'min-h-screen'}`}
                     >
-                        <div className="relative group">
-                            <input
-                                ref={inputRef}
-                                value={queryText}
-                                onChange={(e) => setQueryText(e.target.value)}
-                                type="text"
-                                placeholder="Solo Leveling, Jujutsu Kaisen, Naruto"
-                                className="
-            w-full px-4 py-1 pl-12
-            rounded-md
-            bg-white/5
-            border border-white/10
-            text-white placeholder-white/40
-            outline-none
-            transition-all duration-200
-            group-hover:border-white/20
-            focus:outline-none
-            focus:border-white/30
-            focus:bg-white/10
-            focus:ring-1 focus:ring-white/20
-            shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]
-        "
-                            />
-                            <SearchIcon
-                                size={20}
-                                className="
-            absolute left-4 top-1/2 -translate-y-1/2
-            text-white/50
-            transition-all duration-200
-            group-hover:text-white/70
-            group-focus-within:text-white
-        "
-                            />
-                        </div>
-                        <div className="text-white">
+                        <Input id="search" type="search" placeholder="Solo Leveling, Jujutsu Kaisen, Naruto"
+                            ref={inputRef}
+                            value={queryText}
+                            onChange={(e) => setQueryText(e.target.value)}
+                            className="focus:outline-none outline-none"
+                        />
+                        <div>
                             {(!loading && data.length <= 0) && (
                                 <p className="w-full text-center text-white/70 py-10 text-lg">
                                     Ничего не найдено
@@ -237,7 +214,7 @@ export default function AnimeSearchPage() {
                     />
 
                 </div>
-            </div>
+            </div >
             <MobileFilters
                 openFilters={openFilters}
                 closeFilters={setOpenFilters}

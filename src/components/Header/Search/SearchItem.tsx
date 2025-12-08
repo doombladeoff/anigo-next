@@ -36,11 +36,11 @@ export const SearchItem = ({ el, index }: { el: ShikimoriAnime, index: number })
             </div>
 
             <div className="flex flex-col justify-between py-1">
-                <p className="text-white font-semibold text-sm line-clamp-2">
+                <p className="font-semibold text-sm line-clamp-2">
                     {el.russian || el.name}
                 </p>
 
-                <p className="text-white/60 text-sm mt-1">
+                <p className="dark:text-white/60 text-black/50 text-sm mt-1">
                     {kindLabel || el.kind} {el.kind === 'tv' ? 'Сериал' : ''}
                 </p>
             </div>

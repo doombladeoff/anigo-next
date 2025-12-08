@@ -1,9 +1,9 @@
-import { LastUpdates } from "./components/LastUpdatesAnime";
-import SeasonsAnime from "./components/SeasonsAnime";
+import { LastUpdates } from "../components/LastUpdatesAnime";
+import SeasonsAnime from "../components/SeasonsAnime";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full bg-zinc-50 dark:bg-black text-black dark:text-white">
+    <div className="min-h-screen w-full">
       <main
         className="
           w-full

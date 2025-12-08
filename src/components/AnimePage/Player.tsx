@@ -1,4 +1,6 @@
-export default async function Player({ link, id }: { link: string, id?: string }) {
+'use client';
+
+export default function Player({ link }: { link: string }) {
 
     if (!link) return;
 

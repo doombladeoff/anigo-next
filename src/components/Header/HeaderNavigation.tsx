@@ -19,7 +19,7 @@ export const HeaderNavigation = ({ closeMenu }: { closeMenu?: () => void }) => {
                         onClick={closeMenu ? closeMenu : undefined}
                         className={`text-lg transition-all ${active
                             ? "text-indigo-400 font-semibold"
-                            : "text-white/60 hover:text-white"
+                            : undefined
                             }`}
                     >
                         {item.name}

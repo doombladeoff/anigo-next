@@ -3,9 +3,11 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/useIsDesktop";
 
 export const SeasonItem = ({ item, index }: any) => {
     const [hovered, setHovered] = useState(false);
+    const isMobile = useIsMobile();
 
     return (
         <motion.div
@@ -33,16 +35,18 @@ export const SeasonItem = ({ item, index }: any) => {
                         {item.score.toFixed(1)}
                     </div>
                 )}
-
-                <motion.div
+                {!isMobile && (<motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: hovered ? 1 : 0 }}
                     transition={{ duration: 0.3 }}
                     className="absolute inset-0 bg-black/60 flex items-center justify-center text-center px-2 rounded-xl"
                 >
                     <span className="text-white font-semibold text-sm">{item?.russian}</span>
-                </motion.div>
+                </motion.div>)}
             </div>
+            {isMobile && (
+                <span className="font-semibold text-sm text-cente">{item?.russian}</span>
+            )}
         </motion.div>
     )
 }

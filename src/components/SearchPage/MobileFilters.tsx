@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeftIcon } from "lucide-react"
-import { StatusFilter } from "../Header/Search/StatusFilter"
-import { KindFilter } from "../Header/Search/KindFilter"
+import { StatusFilter } from "../Header/Search/Filters/StatusFilter"
+import { KindFilter } from "../Header/Search/Filters/KindFilter"
 import { KIND_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
+import { Button } from "../ui/button";
+import { HandleButtons } from "../Header/Search/HandleButtons";
 
 interface MobileFilters {
     openFilters: boolean
@@ -28,7 +30,7 @@ export const MobileFilters = ({ openFilters, closeFilters, status, toggleStatus,
                 >
                     <motion.div
                         onClick={(e) => e.stopPropagation()}
-                        className="absolute right-0 top-0 h-full max-w-440 bg-black justify-between border-l border-white/20 p-6 gap-6 flex flex-col"
+                        className="absolute right-0 top-0 h-full w-full light:bg-white dark:bg-black justify-between border-l border-white/20 p-6 gap-6 flex flex-col"
                         initial={{ x: 300 }}
                         animate={{ x: 0 }}
                         exit={{ x: 300 }}
@@ -54,15 +56,7 @@ export const MobileFilters = ({ openFilters, closeFilters, status, toggleStatus,
                                 toggleKind={toggleKind}
                             />
                         </div>
-
-                        <div className="flex gap-4 mt-4">
-                            <button onClick={clearFilters} className="flex-1 border border-amber-50/10 rounded-lg py-2 px-5 text-white hover:bg-white/10 transition-colors">
-                                Сбросить
-                            </button>
-                            <button onClick={applyFilters} className="flex-1bg-purple-600 rounded-lg py-2 px-5 text-white bg-purple-900">
-                                Применить
-                            </button>
-                        </div>
+                        <HandleButtons onApply={applyFilters} onClear={clearFilters} />
                     </motion.div>
                 </motion.div>
             )}
