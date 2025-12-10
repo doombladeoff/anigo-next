@@ -14,6 +14,7 @@ import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import { KIND_FILTERS, RATING_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
 import { Loader } from "./Loader";
 import { notFound } from "next/navigation";
+import { Tabs } from "./Tabs";
 
 const fields: AnimeFields = {
     id: true,
@@ -132,6 +133,7 @@ export const PageContent = ({ id, link }: { id: string, link: string }) => {
                 </div>
 
                 <Description htmlDescription={anime.descriptionHtml} description={anime.description} />
+                <Tabs anime={anime} id={id} />
                 <Player link={link} />
                 <SimilarAnime id={id} />
             </div>
