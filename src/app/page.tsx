@@ -1,7 +1,4 @@
-import { TopRatedAnime } from "@/components/TopRatedAnime";
-import { LastUpdates } from "../components/LastUpdatesAnime";
-import SeasonsAnime from "../components/SeasonsAnime";
-import { NowOnScreensAnime } from "@/components/NowOnScreens";
+import { LastUpdates, NowOnScreensAnime, SeasonsAnime, TopRatedAnime } from "@/components/HomeAnimes";
 
 export default function Home() {
   return (

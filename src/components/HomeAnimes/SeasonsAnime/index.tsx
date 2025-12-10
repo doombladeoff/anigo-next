@@ -7,7 +7,7 @@ import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import { useQuery } from "@apollo/client/react";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",

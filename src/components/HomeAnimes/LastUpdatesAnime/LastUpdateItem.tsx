@@ -19,7 +19,6 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                             transition={{ type: "spring", stiffness: 200, damping: 15 }}
                             className="w-[180px] shrink-0 cursor-pointer group"
                         >
-
                             <div className="relative w-full h-[260px] overflow-hidden rounded-xl shadow-2xl bg-gray-800">
                                 <Image
                                     src={poster || ''}
@@ -40,17 +39,14 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                                     </span>
                                 </div>
                             </div>
-
-                            <p className="mt-2 font-semibold text-sm line-clamp-2 opacity-90">
-                                {title}
-                            </p>
-
-                            {translate && (
-                                <p className="text-xs opacity-60 mt-1 line-clamp-1">
-                                    {translate}
-                                </p>
-                            )}
                         </motion.div>
+
+                        <p className="mt-2 font-semibold text-sm line-clamp-2 opacity-90">
+                            {title}
+                        </p>
+                        <p className="text-xs opacity-60 mt-1 line-clamp-1">
+                            {translate}
+                        </p>
                     </Link>
                 );
             })}
