@@ -4,12 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE и Edge */
-  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none;
+  /* IE и Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;              /* Chrome, Safari */
+  display: none;
+  /* Chrome, Safari */
 }
 
 @theme inline {
@@ -53,13 +56,25 @@
 }
 
 @keyframes fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade {

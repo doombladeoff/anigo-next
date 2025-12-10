@@ -1,4 +1,3 @@
-
 export type AnimeFields = {
     id?: true;
     malId?: true;
@@ -68,9 +67,7 @@ export type AnimeFields = {
         person?: {
             id?: true;
             name?: true;
-            poster?: {
-                id?: true;
-            };
+            poster?: { id?: true };
         };
     };
     characterRoles?: {
@@ -89,7 +86,7 @@ export type AnimeFields = {
     };
     related?: {
         id?: true;
-        anime?: { id?: true; name?: true };
+        anime?: AnimeFields;
         manga?: { id?: true; name?: true };
         relationKind?: true;
         relationText?: true;
@@ -112,8 +109,9 @@ export type AnimeFields = {
         kind?: true;
         playerUrl?: true;
         imageUrl?: true;
-    }
+    };
 };
+
 export const ANIME_FIELDS: AnimeFields = {
     id: true,
     malId: true,

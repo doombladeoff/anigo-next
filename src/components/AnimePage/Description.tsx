@@ -23,8 +23,7 @@ export const Description = ({ htmlDescription, description }: Props) => {
     if (!hasContent) {
         return (
             <div className="w-full flex justify-center items-center self-center px-5 my-5 mt-10">
-                <div className="w-full xl:max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-                    <h2 className="text-2xl font-semibold mb-4">Описание</h2>
+                <div className="w-full bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
                     <p className="prose prose-invert max-w-none opacity-90 leading-relaxed">
                         Нет описания
                     </p>
@@ -35,8 +34,7 @@ export const Description = ({ htmlDescription, description }: Props) => {
 
     return (
         <div className="w-full flex justify-center items-center px-5 my-10">
-            <div className="w-full xl:max-w-6xl bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-                <h2 className="text-2xl font-semibold mb-4">Описание</h2>
+            <div className="w-full bg-white/5 p-6 rounded-2xl">
                 {hasHtmlContent ? (
                     <div
                         className="prose prose-invert max-w-none opacity-90 leading-relaxed"

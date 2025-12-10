@@ -1,10 +1,13 @@
 import { getRandomAnime } from "@/app/api/getRandomAnime";
 import { useRouter } from "next/navigation";
-import { Dice5, Dice5Icon } from "lucide-react";
+import { Dice5 } from "lucide-react";
 import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { useIsMobile } from "@/hooks/useIsDesktop";
 
 export const RandomAnimeButton = ({ onCloseMenu }: { onCloseMenu?: (v: boolean) => void }) => {
     const router = useRouter();
+    const isMobile = useIsMobile();
 
     const handleRandomAnime = async () => {
         const r = await getRandomAnime();
@@ -12,36 +15,28 @@ export const RandomAnimeButton = ({ onCloseMenu }: { onCloseMenu?: (v: boolean) 
         router.push(`/anime/${r.id}`);
     };
 
+    if (isMobile) {
+        return (
+            <Button variant={'outline'} className="gap-4" onClick={handleRandomAnime}>
+                <span className="flex flex-row items-center gap-2 p-4">
+                    <Dice5 className="size-6" />
+                    Случайный релиз
+                </span>
+            </Button>
+        );
+    }
     return (
-        <Button className="gap-2" onClick={handleRandomAnime}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85" }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = "1" }}>
-            <Dice5 className="size-4" />
-            Случайное аниме
-        </Button>
-        // <button
-        //     onClick={handleRandomAnime}
-        //     style={{
-        //         display: "flex",
-        //         flexDirection: "row",
-        //         alignItems: "center",
-        //         gap: 8,
-        //         background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-        //         color: "white",
-        //         border: "none",
-        //         padding: "6px 12px",
-        //         borderRadius: 12,
-        //         fontSize: 15,
-        //         cursor: "pointer",
-        //         fontWeight: 500,
-        //         boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-        //         transition: "0.2s",
-        //     }}
-        //     onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85" }}
-        //     onMouseLeave={(e) => { e.currentTarget.style.opacity = "1" }}
-        // >
-        //     <Dice5Icon size={32} />
-        //     <span>Случайное аниме</span>
-        // </button>
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button variant={'link'} onClick={handleRandomAnime}
+                    onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85" }}
+                    onMouseLeave={(e) => { e.currentTarget.style.opacity = "1" }}>
+                    <Dice5 className="size-6" />
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p className="text-sm">Случайный релиз</p>
+            </TooltipContent>
+        </Tooltip>
     );
 };

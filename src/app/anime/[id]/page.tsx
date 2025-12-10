@@ -14,10 +14,10 @@ export default async function AnimePage({ params }: any) {
 
     const link = await getVideoLink();
 
-    if (!link) notFound();
+    if (!link || !id) notFound();
 
     return (
-        <div className="min-h-screen w-full flex-1 flex">
+        <div className="min-h-screen flex-1 flex">
             <PageContent id={id} link={link} />
         </div>
     );
