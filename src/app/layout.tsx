@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import ApolloWrapper from "@/lib/ApolloWrapper";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ScrollToTop />
         <ApolloWrapper>
           <ThemeProvider
             attribute="class"

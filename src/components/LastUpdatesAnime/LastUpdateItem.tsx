@@ -15,19 +15,18 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                 return (
                     <Link draggable={false} key={item.id} href={`/anime/${item.shikimori_id}`}>
                         <motion.div
-                            key={item.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1, duration: 0.6, type: "spring", stiffness: 100 }}
+                            whileHover={{ y: -6 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 15 }}
                             className="w-[180px] shrink-0 cursor-pointer group"
                         >
-                            <div className="relative w-full h-[260px] overflow-hidden rounded-xl shadow-lg bg-gray-800">
+
+                            <div className="relative w-full h-[260px] overflow-hidden rounded-xl shadow-2xl bg-gray-800">
                                 <Image
                                     src={poster || ''}
                                     alt={title}
                                     unoptimized
                                     fill
-                                    className={`object-cover transition-transform duration-500 opacity-100 scale-100" group-hover:scale-105`}
+                                    className={`object-cover`}
                                     sizes="180px"
                                     draggable={false}
                                     loading={isVisible ? "eager" : "lazy"}
