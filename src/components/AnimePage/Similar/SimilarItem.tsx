@@ -12,7 +12,7 @@ export const SimilarItem = ({ similar, index }: { similar: SimilarAnimeType, ind
 
     return (
         <Link
-            href={`/anime/${similar.id}`}
+            href={`/anime/${similar?.name?.toLowerCase().replace(/\s+/g, '-')}-${similar.id}`}
             draggable={false}
             className="flex flex-col items-center w-[175px] select-none"
         >

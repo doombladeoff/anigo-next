@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 const fields: AnimeFields = {
     id: true,
     russian: true,
+    name: true,
     airedOn: { year: true },
     kind: true,
     score: true,
@@ -187,7 +188,11 @@ export default function AnimeSearchPage() {
                                 ) : data.length > 0 && (
                                     <>
                                         {data.map((el, index) => (
-                                            <Link href={`/anime/${el.id}`} key={`${el.id}-${index}`} className="block">
+                                            <Link
+                                                href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`}
+                                                key={`${el.id}-${index}`}
+                                                className="block"
+                                            >
                                                 <SearchItem el={el} index={index} />
                                             </Link>
                                         ))}

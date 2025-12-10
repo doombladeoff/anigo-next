@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { MaterialObject } from "kodikwrapper";
 
-export const LastUpdateItem = ({ data }: { data: any }) => {
+export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
+    console.log(data)
     return (
         <>
             {data.map((item: any, index: number) => {
@@ -13,7 +15,11 @@ export const LastUpdateItem = ({ data }: { data: any }) => {
                 const translate = item?.translation?.title || "";
                 const isVisible = index < 10;
                 return (
-                    <Link draggable={false} key={item.id} href={`/anime/${item.shikimori_id}`}>
+                    <Link
+                        draggable={false}
+                        key={item.id}
+                        href={`/anime/${item?.material_data?.title_en?.toLowerCase().replace(/\s+/g, '-')}-${item.shikimori_id}`}
+                    >
                         <motion.div
                             whileHover={{ y: -6 }}
                             transition={{ type: "spring", stiffness: 200, damping: 15 }}

@@ -8,7 +8,9 @@ export const SearchOverlayItem = ({ el }: { el: ShikimoriAnime }) => {
     const kind = KIND_FILTERS.find(k => k.key === el.kind)?.label;
 
     return (
-        <Link href={`/anime/${el.id}`} className="flex gap-3">
+        <Link
+            href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`}
+            className="flex gap-3">
             {el?.poster?.preview2xUrl && (
                 <Image
                     src={el.poster.preview2xUrl}

@@ -6,7 +6,7 @@ import Link from "next/link";
 export const RenderCard = ({ anime, index }: { anime: ShikimoriAnime, index: number }) => {
     return (
         <Link
-            href={`/anime/${anime.id}`}
+            href={`/anime/${anime?.name?.toLowerCase().replace(/\s+/g, '-')}-${anime.id}`}
             className="w-[180px] shrink-0 cursor-pointer group"
             draggable={false}
         >

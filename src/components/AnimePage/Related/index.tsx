@@ -13,7 +13,7 @@ export const RelatedAnime = memo(({ data }: { data: ShikimoriAnime }) => {
 
                 return (
                     <Link
-                        href={`/anime/${item.anime.id}`}
+                        href={`/anime/${item?.anime.name?.toLowerCase().replace(/\s+/g, '-')}-${item.anime.id}`}
                         key={item.id}
                         className="p-2 flex flex-col items-center justify-start text-center bg-white dark:bg-black rounded-md shadow-md hover:shadow-lg transition-shadow"
                     >

@@ -17,6 +17,7 @@ const seasonNames: Record<string, string> = {
 const fields: AnimeFields = {
     id: true,
     russian: true,
+    name: true,
     poster: {
         originalUrl: true
     },
@@ -73,7 +74,7 @@ const SeasonsAnime = () => {
                 {data.animes.map((anime: any, index: number) => (
                     <Link
                         key={anime.id}
-                        href={`/anime/${anime.id}`}
+                        href={`/anime/${anime?.name?.toLowerCase().replace(/\s+/g, '-')}-${anime.id}`}
                     >
                         <SeasonItem item={anime} index={index} />
                     </Link>

@@ -27,11 +27,14 @@ export const LastUpdatesSection = ({ updates }: Props) => {
 
     const todayUpdates = updates.filter(u => formatDate(u.updated_at) === today.toDateString());
     const yesterdayUpdates = updates.filter(u => formatDate(u.updated_at) === yesterday.toDateString());
-
+console.log(updates)
     const renderCards = (items: Update[]) => (
         <div className="flex gap-4 overflow-x-auto py-2 no-scrollbar scroll-smooth">
             {items.map(item => (
-                <Link key={item.id} href={`/anime/${item.shikimori_id}`}>
+                <Link key={item.id}
+                    //href={`/anime/${item.shikimori_id}`}
+                    href={`/anime/${item?.title?.toLowerCase().replace(/\s+/g, '-')}-${item.id}`}
+                >
                     <div className="w-[180px] flex-shrink-0 cursor-pointer group bg-amber-100">
                         <div className="relative w-full h-[260px] rounded-xl shadow-lg bg-amber-100">
                             {/* <Image

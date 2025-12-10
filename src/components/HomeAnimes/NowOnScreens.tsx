@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 const fields: AnimeFields = {
     id: true,
     russian: true,
+    name: true,
     poster: {
         originalUrl: true,
         main2xUrl: true,
