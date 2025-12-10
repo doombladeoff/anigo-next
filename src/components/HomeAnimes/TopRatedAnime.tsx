@@ -1,13 +1,10 @@
 'use client';
 
-import { useQuery } from "@apollo/client/react";
 import { ScrollDrag } from "../ScrollDrag";
 import { AnimeFields } from "@/app/api/AnimeFields";
-import { buildAnimeQuery } from "@/lib/apollo";
-import { ShikimoriAnime } from "@/app/types/Shikimori.types";
-import { Skeleton } from "../ui/skeleton";
 import { RenderCard } from "./RenderCard";
 import { SkeletonPlaceholder } from "./SkeletonPlaceholder";
+import { useEffect, useState } from "react";
 
 const fields: AnimeFields = {
     id: true,
@@ -18,22 +15,31 @@ const fields: AnimeFields = {
     },
     score: true,
 };
-const query = buildAnimeQuery(fields);
 
-type AnimeQueryResult = {
-    animes: ShikimoriAnime[];
-};
+const variables = { limit: 15, order: "ranked", kind: "tv,movie" };
 
 export const TopRatedAnime = () => {
-    const { data, loading, error } = useQuery<AnimeQueryResult>(query, {
-        variables: { limit: 15, order: "ranked" },
-    });
+    const [data, setData] = useState<any>([]);
+    const [loading, setLoading] = useState(true);
+
+    const getData = async () => {
+        const res = await fetch("/api/anime", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ fields, variables }),
+        })
+            .then(r => r.json())
+            .then(r => setData(r))
+            .then(() => setLoading(false));
+        return res;
+    }
+    useEffect(() => { getData() }, []);
 
     if (loading) {
         return <SkeletonPlaceholder title="Топ рейтинга" num={15} />
     };
 
-    if (!data?.animes || error) {
+    if (!data?.animes) {
         return <span>Error loading top rated anime.</span>;
     };
 

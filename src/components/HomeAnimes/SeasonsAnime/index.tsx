@@ -1,13 +1,11 @@
 'use client';
 
-import { buildAnimeQuery, client } from "@/lib/apollo";
 import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
-import { ShikimoriAnime } from "@/app/types/Shikimori.types";
-import { useQuery } from "@apollo/client/react";
 import { Skeleton } from "../../ui/skeleton";
+import { useEffect, useState } from "react";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -24,24 +22,33 @@ const fields: AnimeFields = {
     },
     score: true,
 };
-const query = buildAnimeQuery(fields);
 
-type AnimeQueryResult = {
-    animes: ShikimoriAnime[];
-};
+const { season, year } = getCurrentSeason();
+const variables = { limit: 7, season: `${season}_${year}` };
 
 const SeasonsAnime = () => {
-    const { season, year } = getCurrentSeason();
+    const [data, setData] = useState<any>([]);
+    const [loading, setLoading] = useState(true);
 
-    const { data, loading, error } = useQuery<AnimeQueryResult>(query, {
-        variables: { limit: 7, season: `${season}_${year}` },
-    });
+    const getData = async () => {
+        const res = await fetch("/api/anime", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ fields, variables }),
+        })
+            .then(r => r.json())
+            .then(r => setData(r))
+            .then(() => setLoading(false));
+        return res;
+    };
+
+    useEffect(() => { getData() }, []);
 
     if (loading) {
         const skeletons = Array.from({ length: 15 });
         return (
             <div>
-                <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">Топ рейтинга</h2>
+                <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">Аниме {seasonNames[season]} сезона</h2>
                 <div className="flex gap-5 py-2 px-5 xl:px-15 overflow-x-scroll hide-scrollbar">
                     {skeletons.map((_, index) => (
                         <div key={index} className="w-[180px] shrink-0">
@@ -54,7 +61,6 @@ const SeasonsAnime = () => {
         );
     };
 
-    if (error) return null;
     if (!data?.animes?.length) return null;
 
     return (
@@ -64,7 +70,7 @@ const SeasonsAnime = () => {
             </h1>
 
             <div className="flex gap-5 overflow-x-auto px-5 justify-start xl:justify-center hide-scrollbar">
-                {data.animes.map((anime: any, index) => (
+                {data.animes.map((anime: any, index: number) => (
                     <Link
                         key={anime.id}
                         href={`/anime/${anime.id}`}
