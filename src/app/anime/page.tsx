@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimeFields } from "../api/AnimeFields";
-import { buildAnimeQuery, client } from "@/lib/apollo";
 import Link from "next/link";
 import { SearchItem } from "../../components/Header/Search/SearchItem";
 import { useIsMobile } from "@/hooks/useIsDesktop";
@@ -45,8 +44,7 @@ const fields: AnimeFields = {
     episodesAired: true,
 };
 
-const query = buildAnimeQuery(fields);
-const limit = 20;
+const limit = 35;
 
 export default function AnimeSearchPage() {
     const [queryText, setQueryText] = useState<string>('');
@@ -65,45 +63,39 @@ export default function AnimeSearchPage() {
 
     const fetchPage = useCallback(async (pageNumber: number, reset = false) => {
         if (loading) return;
-        setLoading(true);
 
         const formatStatus = status.length ? status.join(",") : undefined;
         const formatKind = kind.length ? kind.join(",") : undefined;
 
-        try {
-            const { data }: { data: any } = await client.query({
-                query,
-                variables: {
-                    ...(queryText.length > 0 && { search: queryText }),
-                    limit: limit,
-                    page: pageNumber,
-                    ...(formatStatus && { status: formatStatus }),
-                    ...(formatKind && { kind: formatKind }),
-                },
-                fetchPolicy: "network-only",
-            });
+        const variables = {
+            ...(queryText.length > 0 && { search: queryText }),
+            limit: limit,
+            page: pageNumber,
+            ...(formatStatus && { status: formatStatus }),
+            ...(formatKind && { kind: formatKind }),
+        };
 
-            const list = data.animes || [];
+        const res = await fetch("/api/anime", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ fields, variables }),
+        })
+            .then(r => r.json())
+            .then(r => {
+                const list = r.animes || [];
 
-            setData(prev => (reset ? list : [...prev, ...list]));
-            setHasMore(list.length === limit);
-        } catch (err) {
-            console.error("API ERROR:", err);
-        }
-
-        setLoading(false);
-    }, [loading, status, kind]);
+                setData(prev => (reset ? list : [...prev, ...list]));
+                setHasMore(list.length === limit);
+            })
+            .then(() => setLoading(false));
+        return res;
+    }, [loading, status, kind, queryText]);
 
     useEffect(() => {
         fetchPage(1, true);
     }, []);
 
     useEffect(() => {
-        if (!queryText) {
-            setData([]);
-            return;
-        }
-
         let timeout = 500;
         const handler = setTimeout(() => fetchPage(1, true), timeout);
 
@@ -117,9 +109,12 @@ export default function AnimeSearchPage() {
                 document.body.offsetHeight - 300;
 
             if (bottom && hasMore && !loading) {
+                setLoading(true);
                 const nextPage = page + 1;
                 setPage(nextPage);
-                fetchPage(nextPage);
+                setTimeout(() => {
+                    fetchPage(nextPage);
+                }, 800);
             }
         };
 
@@ -147,10 +142,6 @@ export default function AnimeSearchPage() {
 
         return () => { document.body.style.overflow = '' };
     }, [openFilters]);
-
-    useEffect(() => {
-        console.log('Status changed: ', status);
-    }, [status])
 
     const toggleStatus = (value: string) => {
         setStatus(prev => prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]);

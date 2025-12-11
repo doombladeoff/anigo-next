@@ -3,7 +3,6 @@ import { ArrowLeftIcon } from "lucide-react"
 import { StatusFilter } from "../Header/Search/Filters/StatusFilter"
 import { KindFilter } from "../Header/Search/Filters/KindFilter"
 import { KIND_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
-import { Button } from "../ui/button";
 import { HandleButtons } from "../Header/Search/HandleButtons";
 
 interface MobileFilters {
@@ -22,7 +21,7 @@ export const MobileFilters = ({ openFilters, closeFilters, status, toggleStatus,
             {openFilters && (
                 <motion.div
                     onClick={() => closeFilters(false)}
-                    className="fixed inset-0 z-50 bg-black/80 md:hidden"
+                    className="fixed inset-0 z-50 bg-white dark:bg-black md:hidden"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -38,7 +37,7 @@ export const MobileFilters = ({ openFilters, closeFilters, status, toggleStatus,
                     >
                         <div className="flex flex-col gap-5">
                             <button
-                                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
+                                className="flex items-center gap-2 text-gray-700"
                                 onClick={() => closeFilters(false)}
                             >
                                 <ArrowLeftIcon size={24} />
