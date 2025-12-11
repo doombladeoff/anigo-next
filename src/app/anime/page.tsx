@@ -5,19 +5,19 @@ import { AnimeFields } from "../api/AnimeFields";
 import { buildAnimeQuery, client } from "@/lib/apollo";
 import Link from "next/link";
 import { SearchItem } from "../../components/Header/Search/SearchItem";
-import { SearchIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/useIsDesktop";
 import { Header } from "../../components/SearchPage/Header";
 import { MobileFilters } from "../../components/SearchPage/MobileFilters";
 import { Filters } from "../../components/SearchPage/Filters";
 import { SearchSkeleton } from "../../components/SearchPage/SearchSkeleton";
 import { Input } from "@/components/ui/input";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { STATUS_FILTERS } from "@/contants/Filters";
 
 const fields: AnimeFields = {
     id: true,
     russian: true,
     name: true,
-    airedOn: { year: true },
     kind: true,
     score: true,
     status: true,
@@ -25,10 +25,40 @@ const fields: AnimeFields = {
         preview2xUrl: true,
         main2xUrl: true,
     },
+    description: true,
+    descriptionHtml: true,
+    genres: {
+        id: true,
+        russian: true,
+    },
+    airedOn: {
+        day: true,
+        month: true,
+        year: true,
+        date: true,
+    },
+    releasedOn: {
+        day: true,
+        month: true,
+        year: true,
+    },
+    episodes: true,
+    episodesAired: true,
 };
 
 const query = buildAnimeQuery(fields);
 const limit = 20;
+
+function formatDate(dateStr: string) {
+    const date = new Date(dateStr);
+
+    return date.toLocaleDateString("ru-RU", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
 export default function AnimeSearchPage() {
     const [queryText, setQueryText] = useState<string>('');
     const [status, setStatus] = useState<string[]>([]);
@@ -160,8 +190,8 @@ export default function AnimeSearchPage() {
     return (
         <>
             {isMobile && <Header openFilters={handleOpenFilters} />}
-            <div className="flex-1 flex justify-center py-15 md:py-10">
-                <div className="flex flex-row gap-10 w-full max-w-6xl">
+            <div className="flex-1 flex justify-center py-15 md:py-5">
+                <div className="flex flex-row gap-10 w-full max-w-7xl">
                     {/* LEFT side (scrolls with the page) */}
                     <div
                         ref={scrollRef}
@@ -179,23 +209,82 @@ export default function AnimeSearchPage() {
                                     Ничего не найдено
                                 </p>
                             )}
-                            <div
-                                className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4"
-                            >
+                            <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-4">
                                 {/* First-page skeleton */}
                                 {loading && page === 1 ? (
                                     Array.from({ length: 20 }).map((_, i) => <SearchSkeleton key={i} />)
                                 ) : data.length > 0 && (
                                     <>
-                                        {data.map((el, index) => (
-                                            <Link
-                                                href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`}
-                                                key={`${el.id}-${index}`}
-                                                className="block"
-                                            >
-                                                <SearchItem el={el} index={index} />
-                                            </Link>
-                                        ))}
+                                        {data.map((el, index) => {
+                                            if (isMobile) return (
+                                                <Link key={el.id} href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`} className="block">
+                                                    <SearchItem el={el} index={index} />
+                                                </Link>
+                                            );
+
+                                            //IF episodesAired < episodes in release status
+                                            const episodesAired =
+                                                el.status === "anons"
+                                                    ? 0
+                                                    : el.status === "released" && (el.episodesAired <= 0 || el.episodesAired < el.episodes)
+                                                        ? el.episodes
+                                                        : el.episodesAired;
+
+                                            return (
+                                                <HoverCard openDelay={300} key={`${el.id}-${index}`}>
+                                                    <HoverCardTrigger asChild>
+                                                        <Link href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`} className="block">
+                                                            <SearchItem el={el} index={index} />
+                                                        </Link>
+                                                    </HoverCardTrigger>
+                                                    <HoverCardContent
+                                                        className="w-lg"
+                                                        side="right"
+                                                        align="start"
+                                                    >
+                                                        <div className="space-y-4">
+                                                            {/* Заголовок */}
+                                                            <div className="space-y-1">
+                                                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2">{el.russian}</h4>
+                                                                <h5 className="text-sm text-gray-500 dark:text-gray-300 line-clamp-2">{el.name}</h5>
+                                                            </div>
+
+                                                            {/* Основная информация */}
+                                                            <div className="grid grid-cols-3 gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-medium text-gray-700 dark:text-gray-200">Статус</span>
+                                                                    <span className="mt-1">{STATUS_FILTERS.find(s => s.key === el.status)?.label || "—"}</span>
+                                                                </div>
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-medium text-gray-700 dark:text-gray-200">Выпуск</span>
+                                                                    <span className="mt-1">{el.airedOn ? `${formatDate(el.airedOn.date)}` : "—"}</span>
+                                                                </div>
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-medium text-gray-700 dark:text-gray-200">Эпизоды</span>
+                                                                    <span className="mt-1">{episodesAired} из {el.episodes || "—"}</span>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Жанры */}
+                                                            {el?.genres?.length > 0 && (
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {el.genres.map((g: any) => (
+                                                                        <Link
+                                                                            href={''}
+                                                                            onClick={() => { }}
+                                                                            key={g.id}
+                                                                            className="px-2 py-1 text-xs font-medium border rounded-sm border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200"
+                                                                        >
+                                                                            {g.russian}
+                                                                        </Link>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </HoverCardContent>
+                                                </HoverCard>
+                                            )
+                                        })}
 
                                         {/* Loader skeleton for next pages */}
                                         {loading && page > 1 && (
@@ -219,7 +308,7 @@ export default function AnimeSearchPage() {
                     />
 
                 </div>
-            </div >
+            </div>
             <MobileFilters
                 openFilters={openFilters}
                 closeFilters={setOpenFilters}
