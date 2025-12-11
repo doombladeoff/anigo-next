@@ -17,7 +17,7 @@ export const Filters = ({ status, toggleStatus, kind, toggleKind, clearFilters, 
     return (
         <div
             onClick={(e) => e.stopPropagation()}
-            className="hidden lg:flex sticky top-20 w-full max-w-[330px] h-[calc(100vh-160px)] rounded-md p-6 dark:bg-white/10 overflow-y-auto flex-col justify-between"
+            className="hidden lg:flex sticky top-20 w-full max-w-[330px] h-[calc(100vh-160px)] rounded-md p-6 dark:bg-white/10 bg-white overflow-y-auto flex-col justify-between"
         >
             <div className="flex flex-col gap-5">
                 <StatusFilter
