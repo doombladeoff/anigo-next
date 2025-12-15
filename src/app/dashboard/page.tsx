@@ -1,38 +1,46 @@
-'use client';
+"use client";
 
+import { useEffect, useRef, useState } from "react";
 import { notFound } from "next/navigation";
 import { useUser } from "@/context/UserContext";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { Loader } from "@/components/AnimePage/Loader";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 
-const fetchUser = async (id: string) => {
-    const res = await fetch(`/api/user/${id}`);
-    if (!res.ok) throw new Error("Failed to fetch user");
-    return res.json();
-};
-
 export default function DashboardPage() {
     const { user } = useUser();
-    const [userd, setUser] = useState<any>(null);
+    const [userData, setUserData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (user)
-            fetchUser(user?.uid)
-                .then((r) => setUser(r))
-                .catch(console.error);
-    }, [user]);
+        if (!user?.uid) return;
+
+        fetch(`/api/user/${user.uid}`)
+            .then((res) => {
+                if (!res.ok) throw new Error("User not found");
+                return res.json();
+            })
+            .then((data) => {
+                setUserData(data);
+            })
+            .catch(console.error)
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [user?.uid]);
 
     if (!user) notFound();
-    if (!userd) return (
-        <div className="flex justify-center py-10">
-            <Loader />
-        </div>
-    );
+
+    if (loading) {
+        return (
+            <div className="flex justify-center py-10">
+                <Loader />
+            </div>
+        );
+    }
+
+    if (!userData) notFound();
 
     const logout = async () => {
         await signOut(auth);
@@ -40,8 +48,14 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="w-full flex flex-col items-center min-h-screen">
-            <Button onClick={logout} className="px-4 py-2 bg-red-500 rounded">Выйти</Button>
+        <div className="w-full flex flex-col items-center min-h-screen gap-4">
+            <h1 className="text-xl font-bold">
+                Привет, {userData.name ?? user.displayName}
+            </h1>
+
+            <Button onClick={logout} variant="destructive">
+                Выйти
+            </Button>
         </div>
     );
 }

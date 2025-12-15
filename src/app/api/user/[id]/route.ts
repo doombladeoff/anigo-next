@@ -1,28 +1,46 @@
 import { NextResponse } from "next/server";
 import admin from "@/lib/firebase-admin";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+export const fetchCache = "default-no-store";
+
 export async function GET(
     req: Request,
-    context: { params: { id: string } | Promise<{ id: string }> }
+    context: { params: Promise<{ id: string }> }
 ) {
-    const params = await context.params;
-    const id = params.id;
+    const { id } = await context.params;
 
     if (!id) {
-        return NextResponse.json({ error: "No user ID provided" }, { status: 400 });
+        return NextResponse.json(
+            { error: "No user ID provided" },
+            { status: 400 }
+        );
     }
 
     try {
-        const docRef = admin.firestore().collection("user-collection").doc(id);
-        const doc = await docRef.get();
+        const doc = await admin
+            .firestore()
+            .collection("user-collection")
+            .doc(id)
+            .get();
 
         if (!doc.exists) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
         }
 
-        return NextResponse.json({ id: doc.id, ...doc.data() });
+        return NextResponse.json({
+            id: doc.id,
+            ...doc.data(),
+        });
     } catch (err: any) {
-        console.error(err);
-        return NextResponse.json({ error: err.message }, { status: 500 });
+        console.error(`API Error: ${err}`);
+        return NextResponse.json(
+            { error: err.message },
+            { status: 500 }
+        );
     }
 }
