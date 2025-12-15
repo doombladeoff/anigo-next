@@ -1,10 +1,9 @@
-'use client';
-
 import { ScrollDrag } from "../ScrollDrag";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { RenderCard } from "./RenderCard";
-import { SkeletonPlaceholder } from "./SkeletonPlaceholder";
-import { useEffect, useState } from "react";
+
+const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
 
 const fields: AnimeFields = {
     id: true,
@@ -19,34 +18,32 @@ const fields: AnimeFields = {
 
 const variables = { limit: 15, order: "ranked", kind: "tv,movie" };
 
-export const TopRatedAnime = () => {
-    const [data, setData] = useState<any>([]);
-    const [loading, setLoading] = useState(true);
-
-    const getData = async () => {
-        const res = await fetch("/api/anime", {
+async function getTopRatedAnime() {
+    await delay(1000);
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/anime`,
+        {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ fields, variables }),
-        })
-            .then(r => r.json())
-            .then(r => setData(r))
-            .then(() => setLoading(false));
-        return res;
-    }
-    useEffect(() => { getData() }, []);
+            cache: "no-store", // всегда свежие данные
+        }
+    );
 
-    if (loading) {
-        return <SkeletonPlaceholder title="Топ рейтинга" num={15} />
-    };
+    return res.json();
+}
 
-    if (!data?.animes) {
-        return <span>Error loading top rated anime.</span>;
-    };
+const TopRatedAnime = async () => {
+    const data = await getTopRatedAnime();
+
+    if (!data?.animes?.length) return null;
 
     return (
         <div className="relative">
-            <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">Топ рейтинга</h2>
+            <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">
+                Топ рейтинга
+            </h2>
+
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
                 {data.animes.map((anime: any, index: number) => (
                     <RenderCard key={anime.id} anime={anime} index={index} />
@@ -55,3 +52,5 @@ export const TopRatedAnime = () => {
         </div>
     );
 };
+
+export default TopRatedAnime;

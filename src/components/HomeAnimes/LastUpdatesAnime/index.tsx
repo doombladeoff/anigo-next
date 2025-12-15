@@ -1,35 +1,34 @@
-'use client';
-
 import { LastUpdateItem } from "./LastUpdateItem";
 import { ScrollDrag } from "../../ScrollDrag";
-import { useEffect, useState } from "react";
 import { MaterialObject } from "kodikwrapper";
-import { SkeletonPlaceholder } from "../SkeletonPlaceholder";
 
-export const LastUpdates = () => {
-    const [results, setResults] = useState<MaterialObject[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+async function getLastUpdates(): Promise<MaterialObject[]> {
+    const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SITE_URL}/api/last-updates?limit=20`,
+        {
+            cache: "no-store",
+        }
+    );
 
-    useEffect(() => {
-        fetch("/api/last-updates?limit=20")
-            .then((res) => res.json())
-            .then((res) => setResults(res))
-            .then(() => setLoading(false))
-            .catch(console.error);
-    }, []);
+    return res.json();
+}
 
-    if (loading) {
-        return <SkeletonPlaceholder title="Последние обновления" num={15} />
-    }
+const LastUpdates = async () => {
+    const results = await getLastUpdates();
 
-    if (!results) return;
+    if (!results?.length) return null;
 
     return (
         <div className="relative">
-            <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">Последние обновления</h2>
+            <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">
+                Последние обновления
+            </h2>
+
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
                 <LastUpdateItem data={results} />
             </ScrollDrag>
         </div>
     );
 };
+
+export default LastUpdates;

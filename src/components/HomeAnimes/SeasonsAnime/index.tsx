@@ -1,11 +1,7 @@
-'use client';
-
 import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
-import { Skeleton } from "../../ui/skeleton";
-import { useEffect, useState } from "react";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -19,62 +15,46 @@ const fields: AnimeFields = {
     russian: true,
     name: true,
     poster: {
-        originalUrl: true
+        originalUrl: true,
     },
     score: true,
 };
 
-const { season, year } = getCurrentSeason();
-const variables = { limit: 7, season: `${season}_${year}` };
+async function getSeasonsAnime() {
+    const { season, year } = getCurrentSeason();
 
-const SeasonsAnime = () => {
-    const [data, setData] = useState<any>([]);
-    const [loading, setLoading] = useState(true);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/anime`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            fields,
+            variables: { limit: 7, season: `${season}_${year}` },
+        }),
+        cache: "no-store",
+    });
 
-    const getData = async () => {
-        const res = await fetch("/api/anime", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ fields, variables }),
-        })
-            .then(r => r.json())
-            .then(r => setData(r))
-            .then(() => setLoading(false));
-        return res;
-    };
+    return res.json();
+}
 
-    useEffect(() => { getData() }, []);
-
-    if (loading) {
-        const skeletons = Array.from({ length: 15 });
-        return (
-            <div>
-                <h2 className="text-2xl font-semibold mb-4 px-5 md:px-10 xl:px-15">Аниме {seasonNames[season]} сезона</h2>
-                <div className="flex gap-5 py-2 px-5 xl:px-15 overflow-x-scroll hide-scrollbar">
-                    {skeletons.map((_, index) => (
-                        <div key={index} className="w-[180px] shrink-0">
-                            <Skeleton className="w-full h-[260px] rounded-xl mb-2" />
-                            <Skeleton className="w-full h-5 rounded-md" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    };
+const SeasonsAnime = async () => {
+    const { season } = getCurrentSeason();
+    const data = await getSeasonsAnime();
 
     if (!data?.animes?.length) return null;
 
     return (
         <>
-            <h1 className="px-5 sm:px-5 md:px-10 xl:px-15 font-semibold text-2xl mb-4">
+            <h2 className="px-5 md:px-10 xl:px-15 font-semibold text-2xl mb-4">
                 Аниме {seasonNames[season]} сезона
-            </h1>
+            </h2>
 
-            <div className="flex gap-5 overflow-x-auto px-5 justify-start xl:justify-center hide-scrollbar">
+            <div className="flex gap-5 overflow-x-auto px-5 xl:px-15 xl:justify-center hide-scrollbar">
                 {data.animes.map((anime: any, index: number) => (
                     <Link
                         key={anime.id}
-                        href={`/anime/${anime?.name?.toLowerCase().replace(/\s+/g, '-')}-${anime.id}`}
+                        href={`/anime/${anime.name
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")}-${anime.id}`}
                     >
                         <SeasonItem item={anime} index={index} />
                     </Link>

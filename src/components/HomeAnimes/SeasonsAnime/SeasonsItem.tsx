@@ -26,7 +26,7 @@ export const SeasonItem = ({ item, index }: any) => {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105 bg-gray-600"
                     sizes="180px"
-                    loading={"eager"}
+                    loading={"lazy"}
                     fetchPriority='high'
                 />
 

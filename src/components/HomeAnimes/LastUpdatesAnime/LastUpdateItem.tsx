@@ -1,12 +1,8 @@
-'use client'
-
 import Link from "next/link";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { MaterialObject } from "kodikwrapper";
 
 export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
-    console.log(data)
     return (
         <>
             {data.map((item: any, index: number) => {
@@ -14,24 +10,27 @@ export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
                 const title = item?.title || "";
                 const translate = item?.translation?.title || "";
                 const isVisible = index < 10;
+
                 return (
                     <Link
-                        draggable={false}
                         key={item.id}
                         href={`/anime/${item?.material_data?.title_en?.toLowerCase().replace(/\s+/g, '-')}-${item.shikimori_id}`}
+                        className="w-[180px] shrink-0 cursor-pointer group"
+                        draggable={false}
                     >
-                        <motion.div
-                            whileHover={{ y: -6 }}
-                            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                            className="w-[180px] shrink-0 cursor-pointer group"
+                        <div
+                            className={`
+                w-[180px] shrink-0 cursor-pointer group
+                transition-transform duration-300 ease-out transform hover:-translate-y-1
+              `}
                         >
-                            <div className="relative w-full h-[260px] overflow-hidden rounded-xl shadow-2xl bg-gray-800">
+                            <div className="relative w-full h-[260px] overflow-hidden rounded-xl shadow-2xl bg-gray-800 opacity-0 animate-fade transition-opacity duration-700 delay-[${index * 50}ms]">
                                 <Image
-                                    src={poster || ''}
+                                    src={poster || ""}
                                     alt={title}
                                     unoptimized
                                     fill
-                                    className={`object-cover`}
+                                    className="object-cover"
                                     sizes="180px"
                                     draggable={false}
                                     loading={isVisible ? "eager" : "lazy"}
@@ -45,7 +44,7 @@ export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
                                     </span>
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
 
                         <p className="mt-2 font-semibold text-sm line-clamp-2 opacity-90">
                             {title}
