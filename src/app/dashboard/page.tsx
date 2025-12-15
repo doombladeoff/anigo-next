@@ -16,6 +16,8 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!user?.uid) return;
 
+        console.log('Fetch User ', user.uid);
+        
         fetch(`/api/user/${user.uid}`)
             .then((res) => {
                 if (!res.ok) throw new Error("User not found");

@@ -10,6 +10,7 @@ export async function GET(
     context: { params: Promise<{ id: string }> }
 ) {
     const { id } = await context.params;
+    console.log('API User ', { id })
 
     if (!id) {
         return NextResponse.json(
@@ -24,7 +25,8 @@ export async function GET(
             .collection("user-collection")
             .doc(id)
             .get();
-
+        console.log('API User ', { doc })
+        
         if (!doc.exists) {
             return NextResponse.json(
                 { error: "User not found" },
