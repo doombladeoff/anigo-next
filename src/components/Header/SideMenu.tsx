@@ -5,12 +5,14 @@ import { HeaderNavigation } from "./HeaderNavigation";
 import { RandomAnimeButton } from "./RandomAnimeButton";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useUser } from "@/context/UserContext";
 
 interface SideMenuProps {
     menuOpen: boolean;
     setMenuOpen: (open: boolean) => void;
 }
 export const SideMenu = ({ menuOpen, setMenuOpen }: SideMenuProps) => {
+    const { user } = useUser();
     return (
         <AnimatePresence>
             {menuOpen && (
@@ -32,11 +34,20 @@ export const SideMenu = ({ menuOpen, setMenuOpen }: SideMenuProps) => {
                     >
                         <HeaderNavigation closeMenu={() => setMenuOpen(false)} />
                         <RandomAnimeButton onCloseMenu={setMenuOpen} />
-                        <Link href="/auth/login">
-                            <Button onClick={() => setMenuOpen(false)} className="mt-4 px-3 py-2 w-full text-sm hover:bg-white/20 transition">
-                                Войти
-                            </Button>
-                        </Link>
+                        {!user ? (
+                            <Link href="/auth/login">
+                                <Button onClick={() => setMenuOpen(false)} className="mt-4 px-3 py-2 w-full text-sm hover:bg-white/20 transition">
+                                    Войти
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Link href="/dashboard">
+                                <Button onClick={() => setMenuOpen(false)} className="mt-4 px-3 py-2 w-full text-sm hover:bg-white/20 transition">
+                                    Профиль
+                                </Button>
+                            </Link>
+                        )}
+
                     </motion.div>
                 </motion.div>
             )}

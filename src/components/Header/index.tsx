@@ -20,6 +20,9 @@ import { useIsMobile } from "@/hooks/useIsDesktop";
 import { SideMenu } from "./SideMenu";
 import { ToggleTheme } from "../ToggleTheme";
 import { Button } from "../ui/button";
+import { useRouter } from 'next/navigation';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { useUser } from '@/context/UserContext';
 
 
 // Types
@@ -64,6 +67,10 @@ const Header = React.forwardRef<HTMLElement, Navbar01Props>(
         },
         ref
     ) => {
+        const router = useRouter();
+
+        const { user } = useUser();
+
         const [searchMode, setSearchMode] = useState(false);
         const [menuOpen, setMenuOpen] = useState(false);
 
@@ -113,12 +120,28 @@ const Header = React.forwardRef<HTMLElement, Navbar01Props>(
 
         if (pathname === '/anime' && isMobile) return;
 
+        const UserAuth = () => {
+            console.log('user header', user)
+            return (
+                <>
+                    {user ? (
+                        <Avatar onClick={() => router.push('/dashboard')}>
+                            <AvatarImage src={user.avatarURL || ''} />
+                            <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                    ) : (
+                        <Button variant='default' onClick={() => router.push('/auth')}>Войти</Button>
+                    )}
+                </>
+            );
+        };
+
         return (
             <>
                 <header
                     ref={combinedRef}
                     className={cn(
-                        'sticky top-0 z-50 w-full dark:bg-black bg-white px-4 md:px-6 [&_*]:no-underline',
+                        'sticky top-0 z-50 w-full dark:bg-black bg-white px-4 md:px-6 **:no-underline',
                         className
                     )}
                     {...(props as any)}
@@ -173,6 +196,7 @@ const Header = React.forwardRef<HTMLElement, Navbar01Props>(
                                     <MenuIcon />
                                 </Button>
                             )}
+                            {!isMobile && (<UserAuth />)}
                         </div>
                     </div>
                 </header>

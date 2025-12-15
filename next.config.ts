@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'kodik.info',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        pathname: '/**',
       }
     ],
   },

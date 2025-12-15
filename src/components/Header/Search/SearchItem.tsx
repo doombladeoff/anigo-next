@@ -15,7 +15,7 @@ export const SearchItem = ({ item, index }: { item: ShikimoriAnime, index: numbe
                         alt={item.russian}
                         fill
                         fetchPriority='high'
-                        className="object-cover rounded-md bg-gray-600/20 shadow-xl"
+                        className="object-cover rounded-md bg-gray-600/20 shadow-xl animate-fade"
                         loading={index < 10 ? "eager" : "lazy"}
                         quality={75}
                         unoptimized
