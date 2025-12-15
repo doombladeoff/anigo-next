@@ -1,13 +1,15 @@
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
-    const options = {
+export async function POST() {
+    const cookieStore = await cookies();
+
+    cookieStore.set({
         name: "session",
         value: "",
         maxAge: -1,
-    };
+        path: "/",
+    });
 
-    (await cookies()).set(options);
-    return NextResponse.json({}, { status: 200 });
+    return NextResponse.json({ success: true });
 }
