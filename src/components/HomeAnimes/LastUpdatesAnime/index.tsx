@@ -1,8 +1,8 @@
 import { LastUpdateItem } from "./LastUpdateItem";
 import { ScrollDrag } from "../../ScrollDrag";
-import { MaterialObject } from "kodikwrapper";
+import { KodikMaterialObject } from "@/app/types/Kodik.types";
 
-async function getLastUpdates(): Promise<MaterialObject[]> {
+async function getLastUpdates(): Promise<KodikMaterialObject[]> {
     const res = await fetch(
         `${process.env.NEXT_PUBLIC_SITE_URL}/api/last-updates?limit=20`,
         {

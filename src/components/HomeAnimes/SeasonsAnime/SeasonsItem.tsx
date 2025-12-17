@@ -4,8 +4,9 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/useIsDesktop";
+import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 
-export const SeasonItem = ({ item, index }: any) => {
+export const SeasonItem = ({ item }: { item: ShikimoriAnime }) => {
     const [hovered, setHovered] = useState(false);
     const isMobile = useIsMobile();
 
@@ -20,7 +21,7 @@ export const SeasonItem = ({ item, index }: any) => {
         >
             <div className="w-[180px] h-[260px] rounded-xl overflow-hidden shadow-2xl relative">
                 <Image
-                    src={item?.poster.originalUrl || ""}
+                    src={item?.poster.main2xUrl || ""}
                     alt={item?.russian || "season_poster"}
                     unoptimized
                     fill

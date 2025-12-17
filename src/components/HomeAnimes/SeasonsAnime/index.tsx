@@ -15,7 +15,7 @@ const fields: AnimeFields = {
     russian: true,
     name: true,
     poster: {
-        originalUrl: true,
+        main2xUrl: true,
     },
     score: true,
 };
@@ -43,7 +43,7 @@ const SeasonsAnime = async () => {
     if (!data?.animes?.length) return null;
 
     return (
-        <>
+        <div className="relative">
             <h2 className="px-5 md:px-10 xl:px-15 font-semibold text-2xl mb-4">
                 Аниме {seasonNames[season]} сезона
             </h2>
@@ -56,11 +56,11 @@ const SeasonsAnime = async () => {
                             .toLowerCase()
                             .replace(/\s+/g, "-")}-${anime.id}`}
                     >
-                        <SeasonItem item={anime} index={index} />
+                        <SeasonItem item={anime} />
                     </Link>
                 ))}
             </div>
-        </>
+        </div>
     );
 };
 

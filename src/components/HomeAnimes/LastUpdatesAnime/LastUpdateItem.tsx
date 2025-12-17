@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { MaterialObject } from "kodikwrapper";
+import { KodikMaterialObject } from "@/app/types/Kodik.types";
 
-export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
+export const LastUpdateItem = ({ data }: { data: KodikMaterialObject[] }) => {
+    console.log(data);
     return (
         <>
-            {data.map((item: any, index: number) => {
+            {data.map((item, index) => {
+                if (!item) return null;
+
                 const poster = item?.material_data?.anime_poster_url || "";
                 const title = item?.title || "";
                 const translate = item?.translation?.title || "";
@@ -20,9 +23,9 @@ export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
                     >
                         <div
                             className={`
-                w-[180px] shrink-0 cursor-pointer group
-                transition-transform duration-300 ease-out transform hover:-translate-y-1
-              `}
+                                w-[180px] shrink-0 cursor-pointer group
+                                transition-transform duration-300 ease-out transform hover:-translate-y-1
+                            `}
                         >
                             <div className="relative w-full h-[260px] overflow-hidden rounded-xl shadow-2xl bg-gray-800 opacity-0 animate-fade transition-opacity duration-700 delay-[${index * 50}ms]">
                                 <Image
@@ -35,6 +38,7 @@ export const LastUpdateItem = ({ data }: { data: MaterialObject[] }) => {
                                     draggable={false}
                                     loading={isVisible ? "eager" : "lazy"}
                                     priority={isVisible}
+                                    quality={75}
                                 />
 
                                 <div className="absolute bottom-0 w-full h-10 flex items-center justify-center">
