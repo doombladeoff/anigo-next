@@ -1,6 +1,7 @@
 import { LastUpdateItem } from "./LastUpdateItem";
 import { ScrollDrag } from "../../ScrollDrag";
 import { KodikMaterialObject } from "@/app/types/Kodik.types";
+import Link from "next/link";
 
 async function getLastUpdates(): Promise<KodikMaterialObject[]> {
     const res = await fetch(
@@ -25,7 +26,20 @@ const LastUpdates = async () => {
             </h2>
 
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
-                <LastUpdateItem data={results} />
+                {results.map((item, index) => {
+                    if (!item) return null;
+
+                    return (
+                        <Link
+                            key={item.id}
+                            href={`/anime/${item?.material_data?.title_en?.toLowerCase().replace(/\s+/g, '-')}-${item.shikimori_id}`}
+                            className="w-[180px] shrink-0 cursor-pointer group"
+                            draggable={false}
+                        >
+                            <LastUpdateItem item={item} index={index} />
+                        </Link>
+                    );
+                })}
             </ScrollDrag>
         </div>
     );

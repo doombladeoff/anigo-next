@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
+import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -15,7 +16,7 @@ const fields: AnimeFields = {
     russian: true,
     name: true,
     poster: {
-        main2xUrl: true,
+        mainUrl: true,
     },
     score: true,
 };
@@ -49,8 +50,9 @@ const SeasonsAnime = async () => {
             </h2>
 
             <div className="flex gap-5 overflow-x-auto px-5 xl:px-15 xl:justify-center hide-scrollbar">
-                {data.animes.map((anime: any, index: number) => (
+                {data.animes.map((anime: ShikimoriAnime) => (
                     <Link
+                        draggable={false}
                         key={anime.id}
                         href={`/anime/${anime.name
                             .toLowerCase()

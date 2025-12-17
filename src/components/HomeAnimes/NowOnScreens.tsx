@@ -1,14 +1,14 @@
 import { ScrollDrag } from "../ScrollDrag";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { RenderCard } from "./RenderCard";
+import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 
 const fields: AnimeFields = {
     id: true,
     russian: true,
     name: true,
     poster: {
-        originalUrl: true,
-        main2xUrl: true,
+        mainUrl: true
     },
     score: true,
 };
@@ -47,8 +47,8 @@ const NowOnScreensAnime = async () => {
             </h2>
 
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
-                {data.animes.map((anime: any, index: number) => (
-                    <RenderCard key={anime.id} anime={anime} index={index} />
+                {data.animes.map((anime: ShikimoriAnime) => (
+                    <RenderCard key={anime.id} anime={anime} />
                 ))}
             </ScrollDrag>
         </div>
