@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
-import { SearchItem } from "../Header/Search/SearchItem";
 import { STATUS_FILTERS } from "@/contants/Filters";
-
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { SearchItem } from "@/components/Header/Search/SearchItem";
 
 function formatDate(dateStr: string) {
     const date = new Date(dateStr);

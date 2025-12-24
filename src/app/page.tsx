@@ -1,6 +1,6 @@
-import { LastUpdates, NowOnScreensAnime, SeasonsAnime, TopRatedAnime } from "@/components/HomeAnimes";
-import SeasonsAnimeSkeleton from "@/components/HomeAnimes/SeasonsAnime/SeasonsSkeleton";
-import { SkeletonPlaceholder } from "@/components/HomeAnimes/SkeletonPlaceholder";
+import { LastUpdates, NowOnScreensAnime, SeasonsAnime, TopRatedAnime } from "@/components/pages/home";
+import SeasonsAnimeSkeleton from "@/components/pages/home/SeasonsAnime/SeasonsSkeleton";
+import { SkeletonPlaceholder } from "@/components/pages/home/SkeletonPlaceholder";
 import { Suspense } from "react";
 
 export default function Home() {

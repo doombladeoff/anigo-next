@@ -12,6 +12,7 @@ export const SeasonItem = ({ item }: { item: ShikimoriAnime; }) => {
                     sizes="180px"
                     quality={50}
                     loading={'eager'}
+                    fetchPriority='high'
                     draggable={false}
                     className="
                         object-cover

@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 
 const nav = [
     { name: "Главная", href: "/" },
-    { name: "Аниме", href: "/anime" },
+    { name: "Аниме", href: "/anime/catalog" },
 ];
 
 export const HeaderNavigation = ({ closeMenu }: { closeMenu?: () => void }) => {

@@ -1,6 +1,6 @@
 import { LastUpdateItem } from "./LastUpdateItem";
-import { ScrollDrag } from "../../ScrollDrag";
 import { KodikMaterialObject } from "@/app/types/Kodik.types";
+import { ScrollDrag } from "@/components/ScrollDrag";
 import Link from "next/link";
 
 async function getLastUpdates(): Promise<KodikMaterialObject[]> {

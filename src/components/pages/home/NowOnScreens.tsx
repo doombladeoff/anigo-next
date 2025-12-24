@@ -1,7 +1,7 @@
-import { ScrollDrag } from "../ScrollDrag";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { RenderCard } from "./RenderCard";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
+import { ScrollDrag } from "@/components/ScrollDrag";
 
 const fields: AnimeFields = {
     id: true,

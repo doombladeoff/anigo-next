@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const SkeletonPlaceholder = ({ title, num }: { title: string, num: number }) => {
     const skeletons = Array.from({ length: num });

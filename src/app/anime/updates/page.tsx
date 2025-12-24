@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { SkeletonPlaceholder } from "@/components/HomeAnimes/SkeletonPlaceholder";
+import { SkeletonPlaceholder } from "@/components/pages/home/SkeletonPlaceholder";
 import { MaterialData, MaterialObject } from "kodikwrapper";
 
 interface UpdateItem {

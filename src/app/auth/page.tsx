@@ -1,8 +1,8 @@
 "use client";
 
 import { auth, provider } from "@/lib/firebase";
-import { getRedirectResult, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { getAuth, getRedirectResult, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from "firebase/auth";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,26 +30,20 @@ export default function LoginPage() {
 
     useEffect(() => {
         const handleRedirect = async () => {
-            try {
-                const userCred = await getRedirectResult(auth);
-                if (!userCred) return;
+            const result = await getRedirectResult(auth);
 
-                const idToken = await userCred.user.getIdToken();
-                const res = await fetch("/api/auth/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ idToken }),
-                });
+            console.log(result)
+            if (!result) return;
 
-                if (res.ok) {
-                    router.push("/dashboard");
-                    router.refresh();
-                } else {
-                    console.error("Server login failed", await res.text());
-                }
-            } catch (err) {
-                console.error("Redirect login error:", err);
-            }
+            const idToken = await result.user.getIdToken();
+
+            await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ idToken }),
+            });
+
+            router.replace("/profile");
         };
 
         handleRedirect();
@@ -67,8 +61,14 @@ export default function LoginPage() {
                 body: JSON.stringify({ idToken }),
             });
 
+            // const res = await fetch("/api/session", {
+            //     method: "POST",
+            //     headers: {
+            //         Authorization: `Bearer ${idToken}`,
+            //     },
+            // });
             if (res.ok) {
-                router.push("/dashboard");
+                router.push("/profile");
                 router.refresh();
             } else {
                 console.error(await res.text());
@@ -87,25 +87,25 @@ export default function LoginPage() {
             const result = await signInWithPopup(auth, provider);
             const idToken = await result.user.getIdToken();
 
-            const res = await fetch("/api/auth/login", {
+            const res = await fetch("/api/auth/session", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idToken }),
+                headers: {
+                    Authorization: `Bearer ${idToken}`,
+                },
             });
 
             if (res.ok) {
-                router.push("/dashboard");
+                router.push("/profile");
                 router.refresh();
             } else {
                 console.error(await res.text());
             }
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            console.error('[Auth error]:', error)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     };
-
     return (
         <div className="flex flex-col items-center justify-center min-h-screen gap-8 light:bg-gray-50 p-4">
             <h1 className="text-3xl font-bold text-center">Вход в аккаунт</h1>

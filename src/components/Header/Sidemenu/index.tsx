@@ -2,9 +2,9 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { HeaderNavigation } from "./HeaderNavigation";
-import { RandomAnimeButton } from "./RandomAnimeButton";
+import { RandomAnimeButton } from "../RandomAnimeButton";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useUser } from "@/context/UserContext";
 
 interface SideMenuProps {

@@ -28,7 +28,7 @@ export const RandomAnimeButton = ({ onCloseMenu }: { onCloseMenu?: (v: boolean) 
     return (
         <Tooltip>
             <TooltipTrigger asChild>
-                <Button variant={'link'} onClick={handleRandomAnime}
+                <Button variant={'link'} onClick={handleRandomAnime} className="cursor-pointer"
                     onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85" }}
                     onMouseLeave={(e) => { e.currentTarget.style.opacity = "1" }}>
                     <Dice5 className="size-6" />

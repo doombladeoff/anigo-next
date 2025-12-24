@@ -8,19 +8,17 @@ export const SearchItem = ({ item, index }: { item: ShikimoriAnime, index: numbe
     return (
         <>
             <div className="relative w-full aspect-2/3 rounded-xl">
-                {item?.poster?.main2xUrl && (
-                    <Image
-                        draggable={false}
-                        src={item?.poster?.preview2xUrl}
-                        alt={item.russian}
-                        fill
-                        fetchPriority='high'
-                        className="object-cover rounded-md bg-gray-600/20 shadow-xl animate-fade"
-                        loading={index < 10 ? "eager" : "lazy"}
-                        quality={75}
-                        unoptimized
-                    />
-                )}
+                <Image
+                    draggable={false}
+                    src={item?.poster?.preview2xUrl}
+                    alt={item?.russian || item?.name || 'anime'}
+                    fill
+                    fetchPriority='high'
+                    className="object-cover rounded-md bg-gray-600/20 shadow-xl animate-fade"
+                    loading={index < 10 ? "eager" : "lazy"}
+                    quality={75}
+                    unoptimized
+                />
 
                 <div className="absolute top-2 left-2 z-10">
                     {item.status === "anons" ? (

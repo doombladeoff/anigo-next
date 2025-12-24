@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeftIcon } from "lucide-react"
-import { StatusFilter } from "../Header/Search/Filters/StatusFilter"
-import { KindFilter } from "../Header/Search/Filters/KindFilter"
+
 import { KIND_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
-import { HandleButtons } from "../Header/Search/HandleButtons";
+import { StatusFilter } from "@/components/Header/Search/Filters/StatusFilter";
+import { KindFilter } from "@/components/Header/Search/Filters/KindFilter";
+import { HandleButtons } from "@/components/Header/Search/HandleButtons";
 
 interface MobileFilters {
     openFilters: boolean

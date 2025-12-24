@@ -1,8 +1,7 @@
+import { KindFilter } from "@/components/Header/Search/Filters/KindFilter";
+import { StatusFilter } from "@/components/Header/Search/Filters/StatusFilter";
+import { HandleButtons } from "@/components/Header/Search/HandleButtons";
 import { KIND_FILTERS, STATUS_FILTERS } from "@/contants/Filters";
-import { KindFilter } from "../Header/Search/Filters/KindFilter";
-import { StatusFilter } from "../Header/Search/Filters/StatusFilter";
-import { Button } from "../ui/button";
-import { HandleButtons } from "../Header/Search/HandleButtons";
 
 interface Filters {
     status: any
