@@ -88,7 +88,7 @@ export const SearchOverlay = ({ closeModal }: { closeModal: (v: boolean) => void
                         <div className="flex px-1 py-5 lg:p-0 lg:h-[100px] w-full justify-center lg:items-center">
                             <p className="text-white/70 font-medium">
                                 Расширенный поиск находится в{" "}
-                                <Link href="/anime" onClick={() => closeModal(false)}>
+                                <Link href="/anime/catalog" onClick={() => closeModal(false)}>
                                     <span className="text-purple-400 font-semibold hover:text-purple-600">
                                         каталоге
                                     </span>

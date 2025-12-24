@@ -2,6 +2,7 @@ import { ShikimoriAnime } from "@/app/types/Shikimori.types"
 import { KIND_FILTERS, STATUS_FILTERS } from "@/contants/Filters"
 import Image from "next/image"
 import Link from "next/link"
+import slugify from "slugify";
 
 export const SearchOverlayItem = ({ el }: { el: ShikimoriAnime }) => {
     const status = STATUS_FILTERS.find(s => s.key === el.status)?.label;
@@ -9,7 +10,15 @@ export const SearchOverlayItem = ({ el }: { el: ShikimoriAnime }) => {
 
     return (
         <Link
-            href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`}
+            href={`/anime/${slugify(el.name,
+                {
+                    replacement: '-',
+                    remove: undefined,
+                    lower: true,
+                    strict: true,
+                    trim: true
+                })}-${el.id}`
+            }
             className="flex gap-3">
             {el?.poster?.preview2xUrl && (
                 <Image

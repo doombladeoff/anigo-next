@@ -1,18 +1,26 @@
-import { getRandomAnime } from "@/app/api/getRandomAnime";
 import { useRouter } from "next/navigation";
 import { Dice5 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { useIsMobile } from "@/hooks/useIsDesktop";
+import slugify from 'slugify'
 
 export const RandomAnimeButton = ({ onCloseMenu }: { onCloseMenu?: (v: boolean) => void }) => {
     const router = useRouter();
     const isMobile = useIsMobile();
 
     const handleRandomAnime = async () => {
-        const r = await getRandomAnime();
+        const res = await fetch("/api/anime/random");
+        const anime = await res.json();
         onCloseMenu && onCloseMenu(false);
-        router.push(`/anime/${r.id}`);
+        router.push(`/anime/${slugify(anime.name,
+            {
+                replacement: '-',
+                remove: undefined,
+                lower: true,
+                strict: true,
+                trim: true
+            })}-${anime.id}`);
     };
 
     if (isMobile) {

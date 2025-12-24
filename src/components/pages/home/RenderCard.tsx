@@ -1,13 +1,20 @@
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import Image from "next/image";
 import Link from "next/link";
+import slugify from "slugify";
 
 export const RenderCard = ({ anime }: { anime: ShikimoriAnime; }) => {
     if (!anime) return null;
 
     return (
         <Link
-            href={`/anime/${anime?.name?.toLowerCase().replace(/\s+/g, "-")}-${anime.id}`}
+            href={`/anime/${slugify(anime.name, {
+                replacement: '-',
+                remove: undefined,
+                lower: true,
+                strict: true,
+                trim: true
+            })}-${anime.id}`}
             className="w-[180px] shrink-0 cursor-pointer group"
             draggable={false}
         >

@@ -2,6 +2,7 @@ import { LastUpdateItem } from "./LastUpdateItem";
 import { KodikMaterialObject } from "@/app/types/Kodik.types";
 import { ScrollDrag } from "@/components/ScrollDrag";
 import Link from "next/link";
+import slugify from "slugify";
 
 async function getLastUpdates(): Promise<KodikMaterialObject[]> {
     const res = await fetch(
@@ -32,7 +33,15 @@ const LastUpdates = async () => {
                     return (
                         <Link
                             key={item.id}
-                            href={`/anime/${item?.material_data?.title_en?.toLowerCase().replace(/\s+/g, '-')}-${item.shikimori_id}`}
+                            href={`/anime/${slugify(item.material_data.title_en!,
+                                {
+                                    replacement: '-',
+                                    remove: undefined,
+                                    lower: true,
+                                    strict: true,
+                                    trim: true
+                                })}-${item.shikimori_id}`
+                            }
                             className="w-[180px] shrink-0 cursor-pointer group"
                             draggable={false}
                         >

@@ -11,6 +11,7 @@ import { RenderCard } from "@/components/pages/catalog/search/RenderCard";
 import { Filters } from "@/components/pages/catalog/search/Filters";
 import { MobileFilters } from "@/components/pages/catalog/search/MobileFilters";
 import { useCatalogSearch } from "@/hooks/useCatalogSearch";
+import slugify from "slugify";
 
 export const Catalog = () => {
 
@@ -81,7 +82,18 @@ export const Catalog = () => {
                                     <>
                                         {data.map((el, index) => {
                                             if (isMobile) return (
-                                                <Link key={el.id} href={`/anime/${el?.name?.toLowerCase().replace(/\s+/g, '-')}-${el.id}`} className="block">
+                                                <Link
+                                                    key={el.id}
+                                                    href={`/anime/${slugify(el.name,
+                                                        {
+                                                            replacement: '-',
+                                                            remove: undefined,
+                                                            lower: true,
+                                                            strict: true,
+                                                            trim: true
+                                                        })}-${el.id}`}
+                                                    className="block"
+                                                >
                                                     <SearchItem item={el} index={index} />
                                                 </Link>
                                             );

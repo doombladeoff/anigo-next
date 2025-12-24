@@ -3,6 +3,7 @@ import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
+import slugify from "slugify";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -54,9 +55,13 @@ const SeasonsAnime = async () => {
                     <Link
                         draggable={false}
                         key={anime.id}
-                        href={`/anime/${anime.name
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}-${anime.id}`}
+                        href={`/anime/${slugify(anime.name, {
+                            replacement: '-',
+                            remove: undefined,
+                            lower: true,
+                            strict: true,
+                            trim: true
+                        })}-${anime.id}`}
                     >
                         <SeasonItem item={anime} />
                     </Link>

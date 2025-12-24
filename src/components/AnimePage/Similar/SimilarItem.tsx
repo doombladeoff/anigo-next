@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useIsMobile } from "@/hooks/useIsDesktop";
 import { SimilarAnimeType } from "./Similar.types";
+import slugify from "slugify";
 
 export const SimilarItem = ({ similar, index }: { similar: SimilarAnimeType, index: number }) => {
     const isMobile = useIsMobile();
@@ -12,7 +13,14 @@ export const SimilarItem = ({ similar, index }: { similar: SimilarAnimeType, ind
 
     return (
         <Link
-            href={`/anime/${similar?.name?.toLowerCase().replace(/\s+/g, '-')}-${similar.id}`}
+            href={`/anime/${slugify(similar.name,
+                {
+                    replacement: '-',
+                    remove: undefined,
+                    lower: true,
+                    strict: true,
+                    trim: true
+                })}-${similar.id}`}
             draggable={false}
             className="flex flex-col items-center w-[175px] select-none"
         >
