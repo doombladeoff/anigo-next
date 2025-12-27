@@ -8,17 +8,18 @@ export const SearchOverlayItem = ({ el }: { el: ShikimoriAnime }) => {
     const status = STATUS_FILTERS.find(s => s.key === el.status)?.label;
     const kind = KIND_FILTERS.find(k => k.key === el.kind)?.label;
 
+    const link = `/anime/${slugify(el.name,
+        {
+            replacement: '-',
+            remove: undefined,
+            lower: true,
+            strict: true,
+            trim: true
+        })}-${el.id}`;
+
     return (
         <Link
-            href={`/anime/${slugify(el.name,
-                {
-                    replacement: '-',
-                    remove: undefined,
-                    lower: true,
-                    strict: true,
-                    trim: true
-                })}-${el.id}`
-            }
+            href={link}
             className="flex gap-3">
             {el?.poster?.preview2xUrl && (
                 <Image
@@ -33,7 +34,7 @@ export const SearchOverlayItem = ({ el }: { el: ShikimoriAnime }) => {
                 <div className="flex flex-col">
                     <span className="text-sm">{status}</span>
                     <p
-                        className="text-white font-bold overflow-hidden"
+                        className="font-bold overflow-hidden"
                         style={{
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -44,7 +45,7 @@ export const SearchOverlayItem = ({ el }: { el: ShikimoriAnime }) => {
                         {el?.russian || el?.name}
                     </p>
                 </div>
-                <div className="flex flex-row items-center gap-2 text-gray-300 text-sm">
+                <div className="flex flex-row items-center gap-2 text-black/40 dark:text-white/60 text-sm">
                     <span className="capitalize">
                         {kind}{el.kind === 'tv' ? ' Сериал' : ''}
                     </span>

@@ -6,6 +6,7 @@ import { RandomAnimeButton } from "../RandomAnimeButton";
 import Link from "next/link";
 import { Button } from "../../ui/button";
 import { useUser } from "@/context/UserContext";
+import SwitchTheme from "../SwitchTheme";
 
 interface SideMenuProps {
     menuOpen: boolean;
@@ -34,6 +35,7 @@ export const SideMenu = ({ menuOpen, setMenuOpen }: SideMenuProps) => {
                     >
                         <HeaderNavigation closeMenu={() => setMenuOpen(false)} />
                         <RandomAnimeButton onCloseMenu={setMenuOpen} />
+                        <SwitchTheme />
                         {!user ? (
                             <Link href="/auth/login">
                                 <Button onClick={() => setMenuOpen(false)} className="mt-4 px-3 py-2 w-full text-sm hover:bg-white/20 transition">

@@ -26,15 +26,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ScrollToTop />
         <ApolloProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
           >
             <UserProvider>
+              <ScrollToTop />
               <Header />
               {children}
             </UserProvider>
