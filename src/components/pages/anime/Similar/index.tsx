@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState } from "react";
-import { ScrollDrag } from "../../ScrollDrag";
+
 import { SimilarAnimeType } from "./Similar.types";
 import { SimilarItem } from "./SimilarItem";
+import { ScrollDrag } from "@/components/ScrollDrag";
 
 export const SimilarAnime = ({ id }: { id: string | number }) => {
     const [animes, setAnimes] = useState<SimilarAnimeType[]>([]);

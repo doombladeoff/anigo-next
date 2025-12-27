@@ -1,4 +1,4 @@
-import { PageContent } from "@/components/AnimePage/PageContent";
+import { AnimeContent } from "@/components/pages/anime/AnimeContent";
 import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -15,13 +15,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     };
     const link = await getVideoLink();
 
-    if (!id || !link) {
-        return notFound();
-    }
+    if (!id || !link) return notFound();
 
     return (
-        <div className="min-h-screen flex-1 flex">
-            <PageContent id={id} link={link} />
-        </div>
+        <main className="min-h-screen flex-1 flex">
+            <AnimeContent id={id} link={link} />
+        </main>
     );
 }

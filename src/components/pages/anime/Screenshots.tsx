@@ -2,9 +2,11 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { ScrollDrag } from "../ScrollDrag";
+
 import { Screenshot } from "@/app/types/Shikimori.types";
-import { ImageZoom } from "../ui/shadcn-io/image-zoom";
+import { ScrollDrag } from "@/components/ScrollDrag";
+import { ImageZoom } from "@/components/ui/shadcn-io/image-zoom";
+
 
 export default function Screenshots({ screenshots }: { screenshots: Screenshot[] }) {
     if (!screenshots || screenshots.length === 0) return null;
