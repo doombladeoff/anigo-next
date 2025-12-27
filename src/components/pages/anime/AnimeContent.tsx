@@ -1,7 +1,5 @@
 'use client';
 
-import Image from "next/image"
-import { BlurBackgoround } from "./BlurBackground"
 import { SimilarAnime } from "./Similar"
 import Player from "./Player"
 import { Description } from "./Description"
