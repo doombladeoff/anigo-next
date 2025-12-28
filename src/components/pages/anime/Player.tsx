@@ -7,7 +7,7 @@ export default function Player({ link }: { link: string }) {
             <div className="w-full max-w-4xl aspect-video xl:rounded-2xl overflow-hidden shadow-xl bg-black/30 backdrop-blur-sm">
                 {link ? (
                     <iframe
-                        src={link}
+                        src={`${link}?episode=1`}
                         className="w-full h-full"
                         allowFullScreen
                         allow="autoplay; fullscreen"
