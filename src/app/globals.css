@@ -189,3 +189,50 @@
   @apply w-full lg:w-auto px-2 pt-2 lg:rounded-xl max-w-full max-h-full
   bg-white/80 dark:bg-black/70 backdrop-blur-xl border border-white/20 dark:border-white/10
 }
+
+/*Anime Page*/
+.container-page {
+  @apply w-full flex flex-col items-center
+}
+
+.wrapp {
+  @apply py-5 xl:py-20 md:pt-20 max-w-7xl w-full space-y-10 z-10
+}
+
+.background-container {
+  @apply absolute inset-0 z-0 w-full h-[280px] sm:h-[340px] md:h-[420px] lg:h-[600px] overflow-hidden
+}
+
+.background {
+  @apply z-50 absolute inset-0 bg-linear-to-b from-white/50 to-white dark:from-black/30 dark:to-[#0a0a0c]
+}
+
+.background-image {
+  @apply absolute inset-0 z-[-1] bg-cover bg-center bg-no-repeat blur-xl scale-105 opacity-90
+}
+
+.top-section {
+  @apply items-center flex flex-col md:flex-row gap-8 px-5
+}
+.poster-container {
+  @apply relative w-56 sm:w-60 md:w-64 lg:w-72 xl:w-80 
+  max-w-full perspective-[1000px] mx-auto
+}
+
+.poster-hover {
+  @apply relative overflow-hidden rounded-3xl shadow-xl
+  transition-transform duration-500 transform-gpu will-change-transform
+}
+
+.poster {
+  @apply w-full h-auto object-cover select-none rounded-3xl 
+  max-h-[75vh] md:max-h-none
+}
+
+.tab {
+  @apply py-2 px-4 text-center font-medium transition-colors duration-300 cursor-pointer
+}
+
+.tab-indicator {
+  @apply absolute bottom-0 h-0.5 bg-black dark:bg-white transition-all duration-300 ease-out
+}

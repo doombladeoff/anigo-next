@@ -1,5 +1,3 @@
-'use client';
-
 export default function Player({ link }: { link: string }) {
 
     if (!link) return;

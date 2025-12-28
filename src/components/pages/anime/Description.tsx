@@ -22,30 +22,28 @@ export const Description = ({ htmlDescription, description }: Props) => {
 
     if (!hasContent) {
         return (
-            <div className="w-full flex justify-center items-center self-center px-5 my-5 mt-10">
-                <div className="w-full bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-2xl">
-                    <p className="prose prose-invert max-w-none opacity-90 leading-relaxed">
-                        Нет описания
-                    </p>
-                </div>
+            <div className="w-full flex flex-col space-y-4">
+                <div className="text-2xl font-bold">Описание</div>
+                <p className="prose prose-invert max-w-none opacity-90 leading-relaxed">
+                    Нет описания
+                </p>
             </div>
         );
     }
 
     return (
-        <div className="w-full flex justify-center items-center px-5 my-10">
-            <div className="w-full bg-white/5 p-6 rounded-2xl">
-                {hasHtmlContent ? (
-                    <div
-                        className="prose prose-invert max-w-none opacity-90 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: htmlDescription! }}
-                    />
-                ) : (
-                    <p className="prose prose-invert max-w-none opacity-90 leading-relaxed text-center">
-                        {plainText}
-                    </p>
-                )}
-            </div>
+        <div className="w-full flex flex-col justify-center space-y-4">
+            <div className="text-2xl font-bold">Описание</div>
+            {hasHtmlContent ? (
+                <div
+                    className="prose prose-invert max-w-none opacity-90 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: htmlDescription! }}
+                />
+            ) : (
+                <p className="prose prose-invert max-w-none opacity-90 leading-relaxed text-center">
+                    {plainText}
+                </p>
+            )}
         </div>
     );
 };
