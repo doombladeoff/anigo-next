@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { useUser } from "@/context/UserContext";
-import { Loader } from "@/components/AnimePage/Loader";
+import { Loader } from "@/components/Loader";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
