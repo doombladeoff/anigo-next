@@ -8,8 +8,8 @@ const seasonNames: Record<string, string> = {
     fall: "осеннего",
 };
 
-const SeasonsAnimeSkeleton = () => {
-    const { season } = getCurrentSeason();
+const SeasonsAnimeSkeleton = async () => {
+    const { season } = await getCurrentSeason();
 
     return (
         <div>

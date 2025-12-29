@@ -14,7 +14,7 @@ const fields: AnimeFields = {
 };
 
 const variables = {
-    limit: 15,
+    limit: 12,
     order: "ranked",
     status: "ongoing",
     sort: "ranked",
@@ -28,7 +28,6 @@ async function getNowOnScreensAnime() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ fields, variables }),
-            cache: "no-store",
         }
     );
 
@@ -47,8 +46,8 @@ const NowOnScreensAnime = async () => {
             </h2>
 
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
-                {data.animes.map((anime: ShikimoriAnime) => (
-                    <RenderCard key={anime.id} anime={anime} />
+                {data.animes.map((anime: ShikimoriAnime, index: number) => (
+                    <RenderCard key={anime.id} anime={anime} index={index} />
                 ))}
             </ScrollDrag>
         </div>

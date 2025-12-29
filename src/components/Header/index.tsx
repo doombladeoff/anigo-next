@@ -7,7 +7,7 @@ import { HeaderLogo } from "./HeaderLogo";
 import { usePathname } from "next/navigation";
 import { SideMenu } from "./Sidemenu";
 import { UserAuth } from './User';
-import { Navigation } from './Navigation';
+import { Navigation } from './Nav/Navigation';
 import { NavigationLinks } from "@/contants/NavLinks";
 import { useIsMobile } from "@/hooks/use-mobile";
 import SwitchTheme from "./SwitchTheme";
@@ -53,8 +53,12 @@ const Header = () => {
 
                     {/* Right side */}
                     <div className="flex items-center gap-3">
-                        <button onClick={() => setSearchMode(true)} className="cursor-pointer">
-                            <SearchIcon />
+                        <button
+                            onClick={() => setSearchMode(true)}
+                            className="cursor-pointer"
+                            aria-label="Открыть поиск"
+                        >
+                            <SearchIcon aria-hidden="true" />
                         </button>
                         {!isMobile && (<SwitchTheme />)}
                         {isMobile && (

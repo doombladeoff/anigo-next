@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
-import slugify from "slugify";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -18,12 +16,13 @@ const fields: AnimeFields = {
     name: true,
     poster: {
         mainUrl: true,
+        preview2xUrl: true,
     },
     score: true,
 };
 
 async function getSeasonsAnime() {
-    const { season, year } = getCurrentSeason();
+    const { season, year } = await getCurrentSeason();
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/anime`, {
         method: "POST",
@@ -32,14 +31,13 @@ async function getSeasonsAnime() {
             fields,
             variables: { limit: 7, season: `${season}_${year}` },
         }),
-        cache: "no-store",
     });
 
     return res.json();
 }
 
 const SeasonsAnime = async () => {
-    const { season } = getCurrentSeason();
+    const { season } = await getCurrentSeason();
     const data = await getSeasonsAnime();
 
     if (!data?.animes?.length) return null;
@@ -51,20 +49,8 @@ const SeasonsAnime = async () => {
             </h2>
 
             <div className="flex gap-5 overflow-x-auto px-5 xl:px-15 xl:justify-center hide-scrollbar">
-                {data.animes.map((anime: ShikimoriAnime) => (
-                    <Link
-                        draggable={false}
-                        key={anime.id}
-                        href={`/anime/${slugify(anime.name, {
-                            replacement: '-',
-                            remove: undefined,
-                            lower: true,
-                            strict: true,
-                            trim: true
-                        })}-${anime.id}`}
-                    >
-                        <SeasonItem item={anime} />
-                    </Link>
+                {data.animes.map((anime: ShikimoriAnime, index: number) => (
+                    <SeasonItem key={anime.id} item={anime} index={index} />
                 ))}
             </div>
         </div>

@@ -12,7 +12,7 @@ export const UserAuth = () => {
 
     if (!user) return (
         <Link href={'/auth'}>
-            <Button variant='default'>Войти</Button>
+            <Button variant='default' className="cursor-pointer">Войти</Button>
         </Link>
     );
 

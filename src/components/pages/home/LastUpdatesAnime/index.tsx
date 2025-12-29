@@ -1,17 +1,9 @@
 import { LastUpdateItem } from "./LastUpdateItem";
 import { KodikMaterialObject } from "@/app/types/Kodik.types";
 import { ScrollDrag } from "@/components/ScrollDrag";
-import Link from "next/link";
-import slugify from "slugify";
 
 async function getLastUpdates(): Promise<KodikMaterialObject[]> {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SITE_URL}/api/last-updates?limit=20`,
-        {
-            cache: "no-store",
-        }
-    );
-
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/last-updates?limit=12`);
     return res.json();
 }
 
@@ -27,28 +19,9 @@ const LastUpdates = async () => {
             </h2>
 
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
-                {results.map((item, index) => {
-                    if (!item) return null;
-
-                    return (
-                        <Link
-                            key={item.id}
-                            href={`/anime/${slugify(item.material_data.title_en!,
-                                {
-                                    replacement: '-',
-                                    remove: undefined,
-                                    lower: true,
-                                    strict: true,
-                                    trim: true
-                                })}-${item.shikimori_id}`
-                            }
-                            className="w-[180px] shrink-0 cursor-pointer group"
-                            draggable={false}
-                        >
-                            <LastUpdateItem item={item} index={index} />
-                        </Link>
-                    );
-                })}
+                {results.map((item, index) => (
+                    <LastUpdateItem key={item.id} item={item} index={index} />
+                ))}
             </ScrollDrag>
         </div>
     );

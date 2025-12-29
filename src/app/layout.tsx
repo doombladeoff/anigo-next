@@ -19,6 +19,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AniGO",
+  description: "AniGO — аниме-платформа: последние обновления, топ рейтинга, сезоны, поиск и просмотр информации об аниме.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode; }) {
@@ -29,8 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ApolloProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="dark"
           >
             <UserProvider>
               <ScrollToTop />

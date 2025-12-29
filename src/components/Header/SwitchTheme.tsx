@@ -20,16 +20,22 @@ const SwitchTheme = () => {
     if (!mounted) return;
 
     return (
-        <div className="flex items-center space-x-2 cursor-pointer">
-            {!isMobile && <SunIcon className="size-4" />}
+        <div className="flex items-center space-x-2">
+            {!isMobile && <SunIcon className="size-4" aria-hidden="true" />}
+
             <Switch
                 id="theme-switch"
                 checked={isDark}
                 onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
                 className="h-6 w-11 [&>span]:h-5.5 [&>span]:w-5.5 cursor-pointer"
+                aria-label="Сменить тему"
             />
-            {isMobile && <Label>Сменить тему</Label>}
-            {!isMobile && <MoonIcon className="size-4 text-muted-foreground" />}
+
+            {isMobile && (
+                <Label htmlFor="theme-switch">Сменить тему</Label>
+            )}
+
+            {!isMobile && <MoonIcon className="size-4 text-muted-foreground" aria-hidden="true" />}
         </div>
     );
 }

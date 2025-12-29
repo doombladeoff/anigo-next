@@ -1,28 +1,15 @@
 'use client';
 
-import { usePathname, useRouter } from "next/navigation";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "../ui/navigation-menu";
+import { usePathname } from "next/navigation";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "../../ui/navigation-menu";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { NavbarLink } from "@/contants/NavLinks";
-import slugify from "slugify";
+import RandomReleaseButton from "./RandomReleaseButton";
 
 export const Navigation = ({ navigationLinks }: { navigationLinks: NavbarLink[] }) => {
-    const router = useRouter();
-    const pathname = usePathname();
 
-    const handleRandomAnime = async () => {
-        const res = await fetch("/api/anime/random");
-        const anime = await res.json();
-        router.push(`/anime/${slugify(anime.name,
-            {
-                replacement: '-',
-                remove: undefined,
-                lower: true,
-                strict: true,
-                trim: true
-            })}-${anime.id}`);
-    };
+    const pathname = usePathname();
 
     return (
         <NavigationMenu className="flex">
@@ -46,9 +33,7 @@ export const Navigation = ({ navigationLinks }: { navigationLinks: NavbarLink[] 
                     )
                 })}
                 <NavigationMenuItem>
-                    <a onClick={handleRandomAnime} className="header-link">
-                        Случайный релиз
-                    </a>
+                    <RandomReleaseButton />
                 </NavigationMenuItem>
             </NavigationMenuList>
         </NavigationMenu>
