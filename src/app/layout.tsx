@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import ScrollToTop from "@/components/ScrollToTop";
 import { UserProvider } from "@/context/UserContext";
 import { ApolloProvider } from "@/providers/ApolloProvider";
+import SnowCanvas from "@/components/SnowCanvas";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <ScrollToTop />
               <Header />
               {children}
+              <SnowCanvas />
             </UserProvider>
           </ThemeProvider>
         </ApolloProvider>
