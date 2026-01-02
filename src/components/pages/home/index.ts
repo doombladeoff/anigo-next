@@ -1,4 +1,4 @@
-import LastUpdates from "./LastUpdatesAnime";
+import LastUpdates from "./LastUpdateAnime";
 import SeasonsAnime from "./SeasonsAnime";
 import NowOnScreensAnime from "./NowOnScreens";
 import TopRatedAnime from "./TopRatedAnime";

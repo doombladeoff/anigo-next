@@ -1,5 +1,5 @@
 import { AnimeFields } from "@/app/api/AnimeFields";
-import { RenderCard } from "./RenderCard";
+import RenderCard from "./RenderCard";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import { ScrollDrag } from "@/components/ScrollDrag";
 
@@ -8,17 +8,19 @@ const fields: AnimeFields = {
     russian: true,
     name: true,
     poster: {
-        mainUrl: true
+        preview2xUrl: true
     },
     score: true,
 };
 
 const variables = {
-    limit: 12,
+    limit: 15,
     order: "ranked",
     status: "ongoing",
     sort: "ranked",
     kind: "tv,movie",
+    rating: "pg_13",
+    score: 6
 };
 
 async function getNowOnScreensAnime() {
@@ -46,9 +48,22 @@ const NowOnScreensAnime = async () => {
             </h2>
 
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
-                {data.animes.map((anime: ShikimoriAnime, index: number) => (
-                    <RenderCard key={anime.id} anime={anime} index={index} />
-                ))}
+                {data.animes.map((anime: ShikimoriAnime, index: number) => {
+                    const isLCP = index < 3;
+
+                    return (
+                        <RenderCard
+                            key={anime.id}
+                            index={index}
+                            title={anime.name}
+                            russian={anime.russian}
+                            posterUrl={anime.poster?.preview2xUrl}
+                            score={anime.score.toFixed(1)}
+                            id={anime.id}
+                            isLCP={isLCP}
+                        />
+                    );
+                })}
             </ScrollDrag>
         </div>
     );

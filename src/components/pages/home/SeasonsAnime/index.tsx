@@ -1,7 +1,7 @@
-import { SeasonItem } from "./SeasonsItem";
 import { getCurrentSeason } from "@/utils/getCurrentSeason";
 import { AnimeFields } from "@/app/api/AnimeFields";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
+import RenderCard from "../RenderCard";
 
 const seasonNames: Record<string, string> = {
     winter: "зимнего",
@@ -15,10 +15,10 @@ const fields: AnimeFields = {
     russian: true,
     name: true,
     poster: {
-        mainUrl: true,
         preview2xUrl: true,
     },
     score: true,
+    status: true,
 };
 
 async function getSeasonsAnime() {
@@ -29,7 +29,12 @@ async function getSeasonsAnime() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             fields,
-            variables: { limit: 7, season: `${season}_${year}` },
+            variables: {
+                limit: 7,
+                season: `${season}_${year}`,
+                order: "ranked",
+                kind: "tv",
+            },
         }),
     });
 
@@ -49,9 +54,22 @@ const SeasonsAnime = async () => {
             </h2>
 
             <div className="flex gap-5 overflow-x-auto px-5 xl:px-15 xl:justify-center hide-scrollbar">
-                {data.animes.map((anime: ShikimoriAnime, index: number) => (
-                    <SeasonItem key={anime.id} item={anime} index={index} />
-                ))}
+                {data.animes.map((anime: ShikimoriAnime, index: number) => {
+                    const score = anime.status === 'anons' ? -1 : anime.score?.toFixed(1) || null;
+
+                    return (
+                        <RenderCard
+                            key={anime.id}
+                            index={index}
+                            title={anime.name}
+                            russian={anime.russian}
+                            posterUrl={anime.poster?.preview2xUrl}
+                            id={anime.id}
+                            isLCP={true}
+                            score={score}
+                        />
+                    );
+                })}
             </div>
         </div>
     );

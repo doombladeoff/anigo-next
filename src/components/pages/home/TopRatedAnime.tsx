@@ -1,5 +1,5 @@
 import { AnimeFields } from "@/app/api/AnimeFields";
-import { RenderCard } from "./RenderCard";
+import RenderCard from "./RenderCard";
 import { ShikimoriAnime } from "@/app/types/Shikimori.types";
 import { ScrollDrag } from "@/components/ScrollDrag";
 import { delay } from "@/utils/delay";
@@ -42,9 +42,22 @@ const TopRatedAnime = async () => {
             </h2>
 
             <ScrollDrag style="flex gap-5 py-2 px-5 xl:px-15 cursor-grab active:cursor-grabbing overflow-x-scroll hide-scrollbar">
-                {data.animes.map((anime: ShikimoriAnime, index: number) => (
-                    <RenderCard key={anime.id} anime={anime} index={index} />
-                ))}
+                {data.animes.map((anime: ShikimoriAnime, index: number) => {
+                    const isLCP = index < 3;
+                    return (
+                        <RenderCard
+                            key={anime.id}
+                            index={index}
+                            title={anime.name}
+                            russian={anime.russian}
+                            posterUrl={anime.poster?.mainUrl}
+                            score={anime.score.toFixed(1)}
+                            id={anime.id}
+                            isLCP={isLCP}
+                            lazy={true}
+                        />
+                    );
+                })}
             </ScrollDrag>
         </div>
     );
