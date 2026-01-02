@@ -40,7 +40,6 @@ export default function RenderCard({ title, russian, posterUrl, score, translate
                         fetchPriority="high"
                         width={240}
                         height={360}
-                        unoptimized
                         className="object-cover"
                         draggable={false}
                     />
