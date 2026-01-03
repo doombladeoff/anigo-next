@@ -1,156 +1,87 @@
 "use client";
 
-import { auth, provider } from "@/lib/firebase";
-import { getAuth, getRedirectResult, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect } from "firebase/auth";
-import { useCallback, useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 
-const profileFormSchema = z.object({
-    email: z.string().email("Введите корректный email"),
-    password: z.string().min(2, "Пароль должен быть минимум 2 символа").max(30, "Пароль слишком длинный"),
-});
-
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+import { loginWithGooglePopup } from "@/lib/firebase/auth";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import LoginForm from "@/components/pages/auth/LoginForm";
+import { createUser } from "@/lib/firebase/create-user";
 
 export default function LoginPage() {
     const router = useRouter();
-    const form = useForm<ProfileFormValues>({
-        resolver: zodResolver(profileFormSchema),
-        defaultValues: { email: "", password: "" },
-        mode: "onChange",
-    });
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const handleRedirect = async () => {
-            const result = await getRedirectResult(auth);
+        let unsub: (() => void) | null = null;
 
-            console.log(result)
-            if (!result) return;
+        const run = async () => {
+            unsub = auth.onAuthStateChanged(async (user) => {
+                if (!user) return;
 
-            const idToken = await result.user.getIdToken();
+                // 👇 redirect успешно отработал
+                const idToken = await user.getIdToken();
 
-            await fetch("/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idToken }),
+                const res = await fetch("/api/auth/session", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${idToken}`,
+                    },
+                });
+
+                if (res.ok) {
+                    await createUser(user);
+                    router.replace("/");
+                } else {
+                    console.error(await res.text());
+                }
             });
-
-            router.replace("/profile");
         };
 
-        handleRedirect();
+        run();
+
+        return () => unsub?.();
     }, [router]);
 
-    const onSubmit = async (data: ProfileFormValues) => {
-        setLoading(true);
-        try {
-            const userCred = await signInWithEmailAndPassword(auth, data.email, data.password);
-            const idToken = await userCred.user.getIdToken();
-
-            const res = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ idToken }),
-            });
-
-            // const res = await fetch("/api/session", {
-            //     method: "POST",
-            //     headers: {
-            //         Authorization: `Bearer ${idToken}`,
-            //     },
-            // });
-            if (res.ok) {
-                router.push("/profile");
-                router.refresh();
-            } else {
-                console.error(await res.text());
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Ошибка входа");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const loginWithGooglePopup = async () => {
-        setLoading(true);
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const idToken = await result.user.getIdToken();
-
-            const res = await fetch("/api/auth/session", {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${idToken}`,
-                },
-            });
-
-            if (res.ok) {
-                router.push("/profile");
-                router.refresh();
-            } else {
-                console.error(await res.text());
-            }
-        } catch (error) {
-            console.error('[Auth error]:', error)
-        } finally {
-            setLoading(false)
-        }
-    };
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen gap-8 light:bg-gray-50 p-4">
-            <h1 className="text-3xl font-bold text-center">Вход в аккаунт</h1>
+        <div className="min-h-screen flex items-center justify-center from-black via-zinc-900 to-black px-4">
+            <Card className="w-full max-w-md border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
+                <CardHeader className="text-center space-y-2">
+                    <CardTitle className="text-3xl font-bold">Добро пожаловать</CardTitle>
+                    <CardDescription>
+                        Войдите в аккаунт, чтобы продолжить
+                    </CardDescription>
+                </CardHeader>
 
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-6 light:bg-white dark:bg-white/5 p-6 rounded-lg shadow-md">
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="your.email@example.com" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                <CardContent className="space-y-6">
+                    <LoginForm />
+                    <Separator />
 
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Пароль</FormLabel>
-                                <FormControl>
-                                    <Input type="password" placeholder="Пароль" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? "Загрузка..." : "Войти"}
+                    {/* GOOGLE */}
+                    <Button
+                        variant="outline"
+                        onClick={async () => await loginWithGooglePopup()}
+                        className="w-full h-11 gap-2"
+                    >
+                        <img src="/google.svg" alt="Google" className="h-5 w-5" />
+                        Войти через Google
                     </Button>
-                </form>
-            </Form>
 
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
-                <Button variant="outline" onClick={loginWithGooglePopup} className="flex-1">
-                    Войти через Google
-                </Button>
-            </div>
+                    {/* REGISTER */}
+                    <p className="text-center text-sm text-muted-foreground">
+                        Нет аккаунта?{" "}
+                        <button
+                            onClick={() => router.push("/register")}
+                            className="text-primary font-medium hover:underline"
+                        >
+                            Зарегистрироваться
+                        </button>
+                    </p>
+                </CardContent>
+            </Card>
         </div>
     );
 }

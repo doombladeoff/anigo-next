@@ -42,7 +42,7 @@ export const UserData = () => {
         );
     }
 
-    if (!userData) notFound();
+    // if (!userData) notFound();
 
     const logout = async () => {
         await signOut(auth);
