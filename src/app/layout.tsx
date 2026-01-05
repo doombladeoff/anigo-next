@@ -36,7 +36,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <UserProvider>
               <ScrollToTop />
               <Header />
-              {children}
+              <main className="min-h-(--main-height)">
+                {children}
+              </main>
               <SnowCanvas />
             </UserProvider>
           </ThemeProvider>

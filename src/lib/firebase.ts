@@ -16,7 +16,10 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 setPersistence(auth, browserLocalPersistence);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({
+    prompt: "select_account",
+});
 
 export { auth, provider, db };

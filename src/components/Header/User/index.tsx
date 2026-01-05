@@ -11,7 +11,7 @@ export const UserAuth = () => {
     if (loading) return null;
 
     if (!user) return (
-        <Link href={'/auth'}>
+        <Link href={'/auth/login'}>
             <Button variant='default' className="cursor-pointer">Войти</Button>
         </Link>
     );

@@ -7,9 +7,10 @@ import { Loader2, Lock, Mail } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { loginWithEmailAndPassword } from "@/lib/firebase/auth";
 
 const profileFormSchema = z.object({
     email: z.string().email("Введите корректный email"),
@@ -18,38 +19,36 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-const onSubmit = async (data: ProfileFormValues) => {
-    try {
-        const userCred = await signInWithEmailAndPassword(auth, data.email, data.password);
-        const idToken = await userCred.user.getIdToken();
-
-        const res = await fetch("/api/session", {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${idToken}`,
-            },
-        });
-        if (res.ok) {
-        } else {
-            console.error(await res.text());
-        }
-    } catch (err) {
-        console.error(err);
-        alert("Ошибка входа");
-    }
-};
-
 export default function LoginForm() {
+    const router = useRouter();
     const form = useForm<ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
         defaultValues: { email: "", password: "" },
         mode: "onChange",
     });
 
+    const [loading, setLoading] = useState(false);
+
+    const onSubmit = async (data: ProfileFormValues) => {
+        try {
+            setLoading(true);
+            await loginWithEmailAndPassword(data.email, data.password)
+                .then(() => {
+                    router.push("/");
+                    router.refresh();
+                })
+                .catch((err) => {
+                    throw err;
+                });
+        } catch (err) {
+            alert(`Ошибка при входе. Проверьте правильность введённых данных.`);
+            setLoading(false);
+        }
+    };
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-
                 {/* EMAIL */}
                 <FormField
                     control={form.control}
@@ -98,12 +97,12 @@ export default function LoginForm() {
                 <Button
                     type="submit"
                     className="w-full h-11 text-base font-semibold"
+                    disabled={loading}
                 >
-                    {/* {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
+                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Войти
                 </Button>
             </form>
         </Form>
-
-    )
+    );
 }

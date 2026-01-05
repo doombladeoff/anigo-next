@@ -118,6 +118,10 @@
   --sidebar-ring: oklch(0.708 0 0);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+
+  --header-height: 64px;
+  --header-margin-top: 8px;
+  --main-height: calc(100dvh - var(--header-height) - var(--header-margin-top));
 }
 
 .dark {
