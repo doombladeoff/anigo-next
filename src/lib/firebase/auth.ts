@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, UserCredential } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut, UserCredential } from "firebase/auth";
 import { auth, provider } from "../firebase";
 
 const handleSession = async (user: UserCredential) => {
@@ -33,4 +33,16 @@ export const loginWithGooglePopup = async () => {
         }).catch((error) => {
             console.error("Error during Google login:", error);
         });
+};
+
+export const logout = async () => {
+    await signOut(auth).then(async () => {
+        console.log("User signed out from Firebase");
+        await fetch("/api/auth/logout", { method: "POST" })
+            .then(() => {
+                console.log("Logged out");
+            });
+    }).catch((err) => {
+        console.error("Error signing out:", err);
+    });
 };
