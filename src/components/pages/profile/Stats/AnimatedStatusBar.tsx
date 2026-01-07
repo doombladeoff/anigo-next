@@ -16,8 +16,6 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export function AnimeStatusBar({ stats }: Props) {
-    if (!stats.total) return null;
-
     return (
         <div className="w-full animate-fade">
             <div className="flex h-3 w-full overflow-hidden rounded-full bg-muted">
@@ -38,11 +36,11 @@ export function AnimeStatusBar({ stats }: Props) {
             </div>
 
             <div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                <LegendItem color="bg-emerald-500" label="Просмотрено" value={stats.completed} />
-                <LegendItem color="bg-sky-500" label="Смотрю" value={stats.watching} />
-                <LegendItem color="bg-amber-500" label="В планах" value={stats.planned} />
-                <LegendItem color="bg-rose-500" label="Брошено" value={stats.dropped} />
-                <LegendItem color="bg-muted" label="Всего" value={stats.total} />
+                <LegendItem color="bg-emerald-500" label="Просмотрено" value={stats.completed || 0} />
+                <LegendItem color="bg-sky-500" label="Смотрю" value={stats.watching || 0} />
+                <LegendItem color="bg-amber-500" label="В планах" value={stats.planned || 0} />
+                <LegendItem color="bg-rose-500" label="Брошено" value={stats.dropped || 0} />
+                <LegendItem color="bg-muted" label="Всего" value={stats.total || 0} />
             </div>
         </div>
     );

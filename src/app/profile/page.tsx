@@ -17,7 +17,7 @@ export default async function ProfilePage() {
         <div className="min-h-(--main-height) py-8 w-full flex justify-center">
             <div className="w-full max-w-7xl px-4 space-y-4">
                 <UserCard userData={userData} />
-                <section>
+                <section className="border rounded-xl p-3">
                     <Suspense fallback={
                         <div className="flex items-center space-x-4">
                             <div className="space-y-2">
