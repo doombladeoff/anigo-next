@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'shikimori.io',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
         hostname: 'kodik.info',
         pathname: '/**',
       },
@@ -19,7 +24,12 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: "s4.anilist.co",
+        pathname: '/**',
+      },
     ],
   },
 };
