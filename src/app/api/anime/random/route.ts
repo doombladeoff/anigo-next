@@ -17,7 +17,7 @@ const getRandomAnime = async () => {
 
         const getVideoLink = async () => {
             const KODIK_TOKEN = process.env.NEXT_PUBLIC_KODIK_TOKEN;
-            const kodikRes = await fetch(`https://kodikapi.com/search?token=${KODIK_TOKEN}&shikimori_id=${anime.id}&limit=1`);
+            const kodikRes = await fetch(`https://kodik-api.com/search?token=${KODIK_TOKEN}&shikimori_id=${anime.id}&limit=1`);
             const kodikData = await kodikRes.json();
             const videolink = !!kodikData?.results?.[0]?.link;
             return videolink;
