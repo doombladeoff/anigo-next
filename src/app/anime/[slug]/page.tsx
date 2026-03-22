@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
     const KODIK_TOKEN = process.env.KODIK_TOKEN;
     const kodikRes = await fetch(
-        `https://kodikapi.com/search?token=${KODIK_TOKEN}&shikimori_id=${id}&limit=1`,
+        `https://kodik-api.com/search?token=${KODIK_TOKEN}&shikimori_id=${id}&limit=1`,
         { cache: "no-store" }
     );
     const kodikData = await kodikRes.json();
